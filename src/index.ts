@@ -24,7 +24,8 @@ export class YiuAxios {
             if (!a) {
                 a = axios.create(axiosConfig)
             }
-            if (isFunction(tempConfig.hook?.beforeSend)) {
+            if (tempConfig.hook
+                && isFunction(tempConfig.hook.beforeSend)) {
                 tempConfig.hook.beforeSend(axiosConfig)
             }
             // 开启加载
@@ -50,7 +51,8 @@ export class YiuAxios {
             }
             a.request<D>(axiosConfig)
              .then((res) => {
-                 if (isFunction(tempConfig.hook?.sendSuccess)) {
+                 if (tempConfig.hook
+                     && isFunction(tempConfig.hook.sendSuccess)) {
                      try {
                          tempConfig.hook.sendSuccess(res)
                      } catch (e) {
@@ -79,7 +81,8 @@ export class YiuAxios {
                  }
              })
              .catch((err) => {
-                 if (isFunction(tempConfig.hook?.sendError)) {
+                 if (tempConfig.hook
+                     && isFunction(tempConfig.hook.sendError)) {
                      try {
                          tempConfig.hook.sendError(err)
                      } catch (e) {
@@ -120,7 +123,8 @@ export class YiuAxios {
                          c.debug && console.error(e)
                      }
                  }
-                 if (isFunction(tempConfig.hook?.sendFinally)) {
+                 if (tempConfig.hook
+                     && isFunction(tempConfig.hook.sendFinally)) {
                      try {
                          tempConfig.hook.sendFinally()
                      } catch (e) {
