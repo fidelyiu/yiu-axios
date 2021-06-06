@@ -3,6 +3,7 @@ import typescript from '@rollup/plugin-typescript'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import babel from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
+import json from '@rollup/plugin-json'
 
 const input = ['src/index.ts']
 const fileName = 'yiu-axios'
@@ -11,9 +12,10 @@ export default [
     {
         input,
         plugins: [
-            nodeResolve(),
+            nodeResolve({ browser: true }),
             commonjs(),
             typescript(),
+            json(),
             babel({ babelHelpers: 'bundled' }),
         ],
         output: [
@@ -40,12 +42,13 @@ export default [
     {
         input,
         plugins: [
+            json(),
             commonjs(),
             typescript(),
             babel({ babelHelpers: 'bundled' }),
         ],
         // ES和Node直接在依赖中，不用重复打包了
-        external: ['axios'],
+        external: ['axios', 'lodash-es'],
         output: [
             // 打包器
             {
