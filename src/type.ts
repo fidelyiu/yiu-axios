@@ -1,4 +1,4 @@
-import { AxiosRequestConfig, AxiosResponse, Canceler, Method } from 'axios'
+import { AxiosRequestConfig, AxiosResponse, Method } from 'axios'
 
 type YiuMethod = Method
     | 'form_data' | 'FORM_DATA'
@@ -161,7 +161,7 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends Omit<AxiosR
     /**
      * 钩子函数
      */
-    hook: {
+    hook?: {
         /**
          * 发送请求前
          *
