@@ -168,5 +168,5 @@ export interface YiuRequestConfig<D = any, T = any> extends Omit<AxiosRequestCon
     /**
      * 是否有取消函数
      */
-    cancel: boolean
+    cancel?: boolean
 }
