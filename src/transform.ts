@@ -5,11 +5,11 @@ import { isFunction } from 'lodash-es'
 
 export function transformConfig(config: YiuRequestConfig): AxiosRequestConfig | undefined {
     // 检查之前的转换
-    if (!config.url && config.aip?.url) {
-        config.url = config.aip.url
+    if (!config.url && config.api?.url) {
+        config.url = config.api.url
     }
-    if (!config.method && config.aip?.method) {
-        config.method = config.aip.method
+    if (!config.method && config.api?.method) {
+        config.method = config.api.method
     }
     // 检查
     if (!checkConfig(config)) {

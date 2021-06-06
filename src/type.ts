@@ -126,7 +126,7 @@ export interface YiuRequestConfig<D = any, T = any> extends Omit<AxiosRequestCon
     /**
      * 可以代替 url & method
      */
-    aip?: YiuAip
+    api?: YiuAip
     /**
      * 是否有路径参数
      */
