@@ -24,8 +24,7 @@
   },
   "license": "MIT",
   "files": [
-    "dist/**/*",
-    "!dist/index.js"
+    "dist/**/*"
   ],
   "dependencies": {
     "axios": "^0.21.1",
