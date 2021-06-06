@@ -1,5 +1,5 @@
 import { YiuRequestConfig } from './type'
-import axios, { AxiosInstance, Canceler } from 'axios'
+import axios, { AxiosInstance, Canceler, CancelTokenStatic } from 'axios'
 import { transformConfig } from './transform'
 import { isFunction } from 'lodash-es'
 
@@ -17,6 +17,7 @@ export class YiuAxios {
     }
 
     send<D = any, T = any, >(c: YiuRequestConfig<D, T>, a?: AxiosInstance): Canceler | undefined {
+        let cancel: Canceler | undefined = undefined
         const tempConfig: YiuRequestConfig<D, T> = Object.assign({}, this.yiuConfig, c)
         let axiosConfig = transformConfig(tempConfig)
         if (axiosConfig) {
@@ -36,6 +37,15 @@ export class YiuAxios {
                     })
                 } catch (e) {
                     c.debug && console.error(e)
+                }
+            }
+            if (tempConfig.cancel) {
+                axiosConfig = {
+                    cancelToken: new axios.CancelToken(function executor(c) {
+                        // executor 函数接收一个 cancel 函数作为参数
+                        cancel = c
+                    }),
+                    ...axiosConfig,
                 }
             }
             a.request<D>(axiosConfig)
@@ -122,6 +132,6 @@ export class YiuAxios {
                  }
              })
         }
-        return
+        return cancel
     }
 }

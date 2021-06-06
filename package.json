@@ -1,6 +1,6 @@
 {
   "name": "yiu-axios",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "基于axios的二次封装库",
   "author": {
     "name": "Fidel Yiu",

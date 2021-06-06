@@ -1,5 +1,4 @@
-import { AxiosInstance, AxiosRequestConfig, AxiosResponse, Method } from 'axios'
-import { keys } from 'lodash-es'
+import { AxiosRequestConfig, AxiosResponse, Canceler, Method } from 'axios'
 
 export interface YiuAip {
     url: string
@@ -166,4 +165,8 @@ export interface YiuRequestConfig<D = any, T = any> extends Omit<AxiosRequestCon
      * 设置token的函数
      */
     setTokenFunc?: (aC: AxiosRequestConfig, token: string) => void
+    /**
+     * 是否有取消函数
+     */
+    cancel: boolean
 }
