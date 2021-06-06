@@ -18,6 +18,7 @@ export default [
             json(),
             babel({ babelHelpers: 'bundled' }),
         ],
+        external: ['lodash-es'],
         output: [
             // ↓浏览器
             {
@@ -26,6 +27,9 @@ export default [
                 name: 'Yiu',
                 esModule: false,
                 exports: 'named',
+                globals: {
+                    'lodash-es': 'lodashEs',
+                },
             },
             // ↓浏览器压缩版
             {
@@ -34,6 +38,9 @@ export default [
                 name: 'Yiu',
                 esModule: false,
                 exports: 'named',
+                globals: {
+                    'lodash-es': 'lodashEs',
+                },
                 sourcemap: true,
                 plugins: [terser()],
             },
@@ -47,7 +54,7 @@ export default [
             typescript(),
             babel({ babelHelpers: 'bundled' }),
         ],
-        external: ['axios', 'lodash-es'],
+        external: ['axios', 'lodash-es', 'qs'],
         output: [
             // 打包器
             {
