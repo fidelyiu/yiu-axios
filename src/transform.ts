@@ -23,6 +23,7 @@ export function transformConfig(config: YiuRequestConfig): AxiosRequestConfig | 
     let aC = config as AxiosRequestConfig
     // 转换后的处理
     transformLang(aC, config)
+    return aC
 }
 
 /**
