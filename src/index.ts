@@ -16,7 +16,7 @@ export class YiuAxios {
         this.yiuConfig = c
     }
 
-    send<D = any, T = any, >(c: YiuRequestConfig<D, T>, a?: AxiosInstance): Canceler | undefined {
+    send<D = any, L = any, T = any, >(c: YiuRequestConfig<D, L, T>, a?: AxiosInstance): Canceler | undefined {
         let cancel: Canceler | undefined = undefined
         const tempConfig: YiuRequestConfig<D, T> = Object.assign({}, this.yiuConfig, c)
         let axiosConfig = transformConfig(tempConfig)
@@ -24,16 +24,16 @@ export class YiuAxios {
             if (!a) {
                 a = axios.create(axiosConfig)
             }
-            if (isFunction(tempConfig.beforeSend)) {
-                tempConfig.beforeSend(axiosConfig)
+            if (isFunction(tempConfig.hook?.beforeSend)) {
+                tempConfig.hook.beforeSend(axiosConfig)
             }
             // 开启加载
-            if (isFunction(tempConfig.loadingBeforeSendFunc)) {
+            if (tempConfig.loading && isFunction(tempConfig.loading.beforeSendFunc)) {
                 try {
-                    tempConfig.loadingBeforeSendFunc({
-                        loading: c.loading,
-                        loadingObj: c.loadingObj,
-                        loadingKey: c.loadingKey,
+                    tempConfig.loading.beforeSendFunc({
+                        loading: tempConfig.loading.flag,
+                        loadingObj: tempConfig.loading.obj,
+                        loadingKey: tempConfig.loading.key,
                     })
                 } catch (e) {
                     c.debug && console.error(e)
@@ -50,19 +50,21 @@ export class YiuAxios {
             }
             a.request<D>(axiosConfig)
              .then((res) => {
-                 if (isFunction(tempConfig.sendSuccess)) {
+                 if (isFunction(tempConfig.hook?.sendSuccess)) {
                      try {
-                         tempConfig.sendSuccess(res)
+                         tempConfig.hook.sendSuccess(res)
                      } catch (e) {
                          c.debug && console.error(e)
                      }
                  }
-                 if (!tempConfig.noSuccessTips && isFunction(tempConfig.showSuccessTips)) {
+                 if (tempConfig.tips?.success
+                     && tempConfig.tips.success.show
+                     && isFunction(tempConfig.tips.success.showFunc)) {
                      try {
-                         tempConfig.showSuccessTips({
-                             type: tempConfig.tipsType,
-                             content: tempConfig.successTipsContent,
-                             title: tempConfig.successTipsTitle,
+                         tempConfig.tips.success.showFunc({
+                             type: tempConfig.tips.success.type || tempConfig.tips.type,
+                             content: tempConfig.tips.success.content,
+                             title: tempConfig.tips.success.title,
                          })
                      } catch (e) {
                          c.debug && console.error(e)
@@ -77,19 +79,21 @@ export class YiuAxios {
                  }
              })
              .catch((err) => {
-                 if (isFunction(tempConfig.sendError)) {
+                 if (isFunction(tempConfig.hook?.sendError)) {
                      try {
-                         tempConfig.sendError(err)
+                         tempConfig.hook.sendError(err)
                      } catch (e) {
                          c.debug && console.error(e)
                      }
                  }
-                 if (!tempConfig.noErrorTips && isFunction(tempConfig.showErrorTips)) {
+                 if (tempConfig.tips?.error
+                     && tempConfig.tips.error.show
+                     && isFunction(tempConfig.tips.error.showFunc)) {
                      try {
-                         tempConfig.showErrorTips({
-                             type: tempConfig.tipsType,
-                             content: tempConfig.errorTipsContent,
-                             title: tempConfig.errorTipsTitle,
+                         tempConfig.tips.error.showFunc({
+                             type: tempConfig.tips.error.type || tempConfig.tips.type,
+                             content: tempConfig.tips.error.content,
+                             title: tempConfig.tips.error.title,
                          })
                      } catch (e) {
                          c.debug && console.error(e)
@@ -105,20 +109,20 @@ export class YiuAxios {
              })
              .finally(() => {
                  // 关闭加载
-                 if (isFunction(tempConfig.loadingFinallySendFunc)) {
+                 if (tempConfig.loading && isFunction(tempConfig.loading.finallySendFunc)) {
                      try {
-                         tempConfig.loadingFinallySendFunc({
-                             loading: c.loading,
-                             loadingObj: c.loadingObj,
-                             loadingKey: c.loadingKey,
+                         tempConfig.loading.finallySendFunc({
+                             loading: tempConfig.loading.flag,
+                             loadingObj: tempConfig.loading.obj,
+                             loadingKey: tempConfig.loading.key,
                          })
                      } catch (e) {
                          c.debug && console.error(e)
                      }
                  }
-                 if (isFunction(tempConfig.sendFinally)) {
+                 if (isFunction(tempConfig.hook?.sendFinally)) {
                      try {
-                         tempConfig.sendFinally()
+                         tempConfig.hook.sendFinally()
                      } catch (e) {
                          c.debug && console.error(e)
                      }

@@ -1,7 +1,8 @@
-import { YiuRequestConfig } from './type'
+import { ContentTypeEnum, YiuRequestConfig } from './type'
 import { AxiosRequestConfig } from 'axios'
 import { checkConfig, checkPathData } from './check'
-import { isFunction } from 'lodash-es'
+import { isArray, isFunction, mapKeys } from 'lodash-es'
+import qs from 'qs'
 
 export function transformConfig(config: YiuRequestConfig): AxiosRequestConfig | undefined {
     // 检查之前的转换
@@ -19,10 +20,14 @@ export function transformConfig(config: YiuRequestConfig): AxiosRequestConfig | 
     if (!transformPathData(config)) {
         return
     }
+    transformFormUrlEncoded(config)
+    transformFormData(config)
+    transformContentType(config)
     // 转换
     let aC = config as AxiosRequestConfig
     // 转换后的处理
     transformLang(aC, config)
+    transformToken(aC, config)
     return aC
 }
 
@@ -46,21 +51,70 @@ function transformPathData(config: YiuRequestConfig): boolean {
 }
 
 /**
+ * 处理FormUrlEncoded
+ * 表单POST请求
+ * @param config
+ */
+function transformFormUrlEncoded(config: YiuRequestConfig): void {
+    if (config.method === 'FORM_URLENCODED') {
+        config.method = 'POST'
+        config.contentType = ContentTypeEnum.FORM_URLENCODED
+        if (config.data) {
+            config.data = qs.stringify(config.data, { arrayFormat: 'brackets' })
+        }
+    }
+}
+
+/**
+ * 处理FormData
+ * 上传POST请求
+ */
+function transformFormData(config: YiuRequestConfig): void {
+    if (config.method === 'FORM_DATA') {
+        config.method = 'POST'
+        config.contentType = ContentTypeEnum.FORM_DATA
+        const formData = new window.FormData()
+        if (config.data) {
+            mapKeys(config.data, (v, k) => {
+                if (isArray(v)) {
+                    v.forEach((item) => {
+                        formData.append(`${k}[]`, item)
+                    })
+                }
+                formData.append(k, v)
+            })
+        }
+        if (config.upload?.file) {
+            formData.append(config.upload.key || 'file', config.upload.file, config.upload.name)
+        }
+        config.data = formData
+    }
+}
+
+/**
+ * 处理ContentType类型
+ */
+function transformContentType(config: YiuRequestConfig): void {
+    if (config.contentType) {
+        if (!config.headers) config.headers = {}
+        config.headers['Content-Type'] = config.contentType
+    }
+}
+
+/**
  * 处理国际化
  */
 function transformLang(aC: AxiosRequestConfig, yC: YiuRequestConfig): void {
     if (!yC.headers) yC.headers = {}
-    if (!yC.lang) {
-        let currentLang: string | undefined
-        if (isFunction(yC.getCurrentLang)) {
-            currentLang = yC.getCurrentLang()
-        }
-        yC.lang = currentLang
+    if (!yC.lang
+        && yC.langFunc
+        && isFunction(yC.langFunc.get)) {
+        yC.lang = yC.langFunc.get()
     }
-    if (yC.lang) {
-        if (isFunction(yC.setLangFunc)) {
-            yC.setLangFunc(aC, yC.lang)
-        }
+    if (yC.lang
+        && yC.langFunc
+        && isFunction(yC.langFunc.set)) {
+        yC.langFunc.set(aC, yC.lang)
     }
 }
 
@@ -70,17 +124,15 @@ function transformLang(aC: AxiosRequestConfig, yC: YiuRequestConfig): void {
 function transformToken(aC: AxiosRequestConfig, yC: YiuRequestConfig): void {
     if (!yC.headers) yC.headers = {}
     if (!yC.noToken) {
-        if (!yC.token) {
-            let currentToken: string | undefined
-            if (isFunction(yC.getCurrentToken)) {
-                currentToken = yC.getCurrentToken()
-            }
-            yC.token = currentToken
+        if (!yC.token
+            && yC.tokenFunc
+            && isFunction(yC.tokenFunc.get)) {
+            yC.token = yC.tokenFunc.get()
         }
-        if (yC.token) {
-            if (isFunction(yC.setTokenFunc)) {
-                yC.setTokenFunc(aC, yC.token)
-            }
+        if (yC.token
+            && yC.tokenFunc
+            && isFunction(yC.tokenFunc.set)) {
+            yC.tokenFunc.set(aC, yC.token)
         }
     }
 }

@@ -47,6 +47,9 @@ export function checkMethod(config: YiuRequestConfig): boolean {
  * - 错误 >> false
  */
 export function checkPathData(config: YiuRequestConfig): boolean {
+    if (config.pathHasBracket) {
+        return true
+    }
     if (config.url) {
         const result = config.url.match(/{.*?}/g)
         if (result && result.length) {
