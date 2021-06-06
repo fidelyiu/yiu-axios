@@ -3,6 +3,12 @@ import axios, { AxiosInstance, Canceler } from 'axios'
 import { transformConfig } from './transform'
 import { isFunction } from 'lodash-es'
 
+export const yiuAxios = {
+    create: function (c: YiuRequestConfig): YiuAxios {
+        return new YiuAxios(c)
+    },
+}
+
 export class YiuAxios {
     yiuConfig: YiuRequestConfig
 
