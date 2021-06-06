@@ -1,5 +1,5 @@
 import { YiuRequestConfig } from './type'
-import axios, { AxiosInstance, Canceler, CancelTokenStatic } from 'axios'
+import axios, { AxiosInstance, Canceler } from 'axios'
 import { transformConfig } from './transform'
 import { isFunction } from 'lodash-es'
 
