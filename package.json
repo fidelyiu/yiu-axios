@@ -19,7 +19,8 @@
   "browser": "dist/yiu-axios.iife.js",
   "scripts": {
     "build": "tsc && rollup -c",
-    "tsc:init": "tsc -init"
+    "tsc:init": "tsc -init",
+    "npm:push": "npm publish"
   },
   "license": "MIT",
   "files": [
@@ -39,5 +40,9 @@
     "rollup-plugin-terser": "^7.0.2",
     "tslib": "^2.2.0",
     "typescript": "^4.3.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fidelyiu/yiu-axios"
   }
 }
