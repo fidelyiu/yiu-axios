@@ -96,6 +96,15 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
          */
         show?: boolean
         /**
+         * 展示成功消息的方式
+         */
+        showFunc?: (res: {
+            isSuccess?: boolean
+            type?: T
+            content?: any
+            title?: any
+        }) => void
+        /**
          * 成功Tips的配置
          */
         success?: {
@@ -108,7 +117,7 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
              */
             show?: boolean
             /**
-             * 展示成功消息的方式
+             * 展示成功消息的方式，比上级的优先级高
              */
             showFunc?: (res: {
                 type?: T
@@ -137,7 +146,7 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
              */
             show: boolean
             /**
-             * 展示失败消息的方式
+             * 展示失败消息的方式，比上级的优先级高
              */
             showFunc?: (res: {
                 type?: any

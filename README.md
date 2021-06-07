@@ -233,10 +233,15 @@ yiuAxios.send({
 消息展示
 - `type`：消息展示的类型，由`YC`的第三个泛型控制。
 - `show`：请求后是否展示消息
+- `showFunc`：展示成功消息的方法
+  - `isSuccess`：是否是成功消息
+  - `type`：消息类型
+  - `content`：消息内容
+  - `title`：消息标题
 - `success`：成功后的消息配置
   - `type`：同上级`type`，比上级的优先级高
   - `show`：同上级`show`，比上级的优先级高
-  - `showFunc`：展示成功消息的方法
+  - `showFunc`：同上级`showFunc`，比上级的优先级高
     - `type`：消息类型
     - `content`：消息内容
     - `title`：消息标题

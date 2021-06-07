@@ -76,14 +76,22 @@ class YiuAxios<D = any, L = any, T = any, > {
                  if (tempConfig.tips?.success
                      && (
                          isBoolean(tempConfig.tips.success.show) ? tempConfig.tips.success.show : tempConfig.tips.show
-                     )
-                     && isFunction(tempConfig.tips.success.showFunc)) {
+                     )) {
                      try {
-                         tempConfig.tips.success.showFunc({
-                             type: tempConfig.tips.success.type || tempConfig.tips.type,
-                             content: tempConfig.tips.success.content,
-                             title: tempConfig.tips.success.title,
-                         })
+                         if (isFunction(tempConfig.tips.success.showFunc)) {
+                             tempConfig.tips.success.showFunc({
+                                 type: tempConfig.tips.success.type || tempConfig.tips.type,
+                                 content: tempConfig.tips.success.content,
+                                 title: tempConfig.tips.success.title,
+                             })
+                         } else if (isFunction(tempConfig.tips.showFunc)) {
+                             tempConfig.tips.showFunc({
+                                 isSuccess: true,
+                                 type: tempConfig.tips.success.type || tempConfig.tips.type,
+                                 content: tempConfig.tips.success.content,
+                                 title: tempConfig.tips.success.title,
+                             })
+                         }
                      } catch (e) {
                          yC?.debug && console.error(e)
                      }
@@ -108,14 +116,22 @@ class YiuAxios<D = any, L = any, T = any, > {
                  if (tempConfig.tips?.error
                      && (
                          isBoolean(tempConfig.tips.error.show) ? tempConfig.tips.error.show : tempConfig.tips.show
-                     )
-                     && isFunction(tempConfig.tips.error.showFunc)) {
+                     )) {
                      try {
-                         tempConfig.tips.error.showFunc({
-                             type: tempConfig.tips.error.type || tempConfig.tips.type,
-                             content: tempConfig.tips.error.content,
-                             title: tempConfig.tips.error.title,
-                         })
+                         if (isFunction(tempConfig.tips.error.showFunc)) {
+                             tempConfig.tips.error.showFunc({
+                                 type: tempConfig.tips.error.type || tempConfig.tips.type,
+                                 content: tempConfig.tips.error.content,
+                                 title: tempConfig.tips.error.title,
+                             })
+                         } else if (isFunction(tempConfig.tips.showFunc)) {
+                             tempConfig.tips.showFunc({
+                                 isSuccess: false,
+                                 type: tempConfig.tips.error.type || tempConfig.tips.type,
+                                 content: tempConfig.tips.error.content,
+                                 title: tempConfig.tips.error.title,
+                             })
+                         }
                      } catch (e) {
                          yC?.debug && console.error(e)
                      }
