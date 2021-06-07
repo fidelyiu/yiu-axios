@@ -9,9 +9,9 @@
 
 以下 `YC` 为 `YiuRequestConfig` 的简写， `AC` 为 `AxiosRequestConfig` 的简写。
 
-### 1.简单使用
+# 1.简单使用
 
-#### 1.1.yiuAxios.send()
+## 1.1.yiuAxios.send()
 这将使用 `yiu-axios` 中默认的 `yiuAxios` 实例。
 ```typescript
 import { yiuAxios } from 'yiu-axios'
@@ -24,7 +24,7 @@ yiuAxios.send({
 })
 ```
 
-#### 1.2.yiuAxios.create()
+## 1.2.yiuAxios.create()
 这样你就可以维护多个 `axios` 和 `yiu-axios` 的实例了。
 ```typescript
 import { yiuAxios } from 'yiu-axios'
@@ -46,7 +46,7 @@ defYiuAxios.send({
 ```
 
 
-### 2.配置优先级
+# 2.配置优先级
 `axios配置` >> `yiu-axios配置` >> `yiu-axios默认配置` >> `axios默认配置`
 
 以下案例最终将发送 `http://localhost:8080/axios` 的 `GET` 请求。
@@ -81,9 +81,9 @@ defYiuAxios.send(
 ```
 
 
-### 3.yiu-axios的配置
+# 3.yiu-axios的配置
 
-#### 3.1.api
+## 3.1.api
 将 `url`、`method` 提出来到 `api` 中是因为，我想将项目中的所有的接口都以这种方式的对象维护起来，方便同意管理。
 
 而且 `YC.api.method` 中比 `AC.method` 多两种类型：`FORM_DATA`、`FORM_URLENCODED`。
@@ -106,7 +106,7 @@ yiuAxios.send({
 ```
 
 
-#### 3.2.loading
+## 3.2.loading
 这也是我编写 `yiu-axios` 的主要原因，项目中那么多 `loading`，全部自己维护实在太难了。
 
 - `flag`：
@@ -129,7 +129,7 @@ yiuAxios.send({
   - 参数依次为：`flag`、`obj`、`key`。
 
 
-##### 3.2.1.obj + key
+### 3.2.1.obj + key
 基本所有情况都可以使用这种`obj` + `key`方式解决。
 
 最典型的场景就是 `vue2` 中 `data` 的 `boolean` 值，
@@ -171,7 +171,7 @@ yiuAxiosInstance.send({
 ```
 
 
-##### 3.2.2.flag
+### 3.2.2.flag
 为什么有`obj`+`key`还需要`flag`?
 如果 `flag` 是 `vue3` 的 `Ref`，那么是不是会轻松许多?
 
@@ -209,7 +209,7 @@ yiuAxiosInstance.send({
 
 ```
 
-#### 3.3.success、error、finally
+## 3.3.success、error、finally
 三个请求的必要事件。
 ```typescript
 yiuAxios.send({
@@ -229,11 +229,11 @@ yiuAxios.send({
 ```
 
 
-#### 3.4.tips
+## 3.4.tips
 消息展示
 
 
-### 3.三次封装
+# 3.三次封装
 这里拿 `vue3` 的自动 `loading` 作为案例。
 
 ```typescript
