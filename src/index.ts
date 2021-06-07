@@ -4,24 +4,25 @@ import { transformConfig } from './transform'
 import { isBoolean, isFunction, merge } from 'lodash-es'
 
 export const yiuAxios = {
-    create<D = any, L = any, T = any>(c: YiuRequestConfig<D, L, T>): YiuAxios {
+    create<D = any, L = any, T = any>(c?: YiuRequestConfig<D, L, T>): YiuAxios {
         return new YiuAxios<D, L, T>(c)
     },
-    send<D = any, L = any, T = any>(yC: YiuRequestConfig<D, L, T>, a?: AxiosInstance, aC?: AxiosRequestConfig): Canceler | undefined {
+    send<D = any, L = any, T = any>(yC?: YiuRequestConfig<D, L, T>, a?: AxiosInstance, aC?: AxiosRequestConfig): Canceler | undefined {
         return _yiuAxios.send<D, L, T>(yC, a, aC)
     },
 }
 
 
 class YiuAxios<D = any, L = any, T = any, > {
-    private readonly yiuConfig: YiuRequestConfig<D, L, T>
+    private readonly yiuConfig?: YiuRequestConfig<D, L, T>
 
-    constructor(c: YiuRequestConfig) {
+    constructor(c?: YiuRequestConfig) {
         this.yiuConfig = c
     }
 
-    send<D, L, T>(yC: YiuRequestConfig<D, L, T>, a?: AxiosInstance, aC?: AxiosRequestConfig): Canceler | undefined {
+    send<D, L, T>(yC?: YiuRequestConfig<D, L, T>, a?: AxiosInstance, aC?: AxiosRequestConfig): Canceler | undefined {
         let cancel: Canceler | undefined = undefined
+        if (!yC) yC = {}
         const tempConfig: YiuRequestConfig<D, L, T> = merge({}, this.yiuConfig, yC)
         let axiosConfig = transformConfig(tempConfig, aC)
         if (yC.noSend) {
@@ -69,7 +70,7 @@ class YiuAxios<D = any, L = any, T = any, > {
                      try {
                          tempConfig.hook.sendSuccess(res)
                      } catch (e) {
-                         yC.debug && console.error(e)
+                         yC?.debug && console.error(e)
                      }
                  }
                  if (tempConfig.tips?.success
@@ -84,14 +85,14 @@ class YiuAxios<D = any, L = any, T = any, > {
                              title: tempConfig.tips.success.title,
                          })
                      } catch (e) {
-                         yC.debug && console.error(e)
+                         yC?.debug && console.error(e)
                      }
                  }
                  if (isFunction(tempConfig.success)) {
                      try {
                          tempConfig.success(res)
                      } catch (e) {
-                         yC.debug && console.error(e)
+                         yC?.debug && console.error(e)
                      }
                  }
              })
@@ -101,7 +102,7 @@ class YiuAxios<D = any, L = any, T = any, > {
                      try {
                          tempConfig.hook.sendError(err)
                      } catch (e) {
-                         yC.debug && console.error(e)
+                         yC?.debug && console.error(e)
                      }
                  }
                  if (tempConfig.tips?.error
@@ -116,14 +117,14 @@ class YiuAxios<D = any, L = any, T = any, > {
                              title: tempConfig.tips.error.title,
                          })
                      } catch (e) {
-                         yC.debug && console.error(e)
+                         yC?.debug && console.error(e)
                      }
                  }
                  if (isFunction(tempConfig.error)) {
                      try {
                          tempConfig.error(err)
                      } catch (e) {
-                         yC.debug && console.error(e)
+                         yC?.debug && console.error(e)
                      }
                  }
              })
@@ -137,7 +138,7 @@ class YiuAxios<D = any, L = any, T = any, > {
                              loadingKey: tempConfig.loading.key,
                          })
                      } catch (e) {
-                         yC.debug && console.error(e)
+                         yC?.debug && console.error(e)
                      }
                  }
                  if (tempConfig.hook
@@ -145,14 +146,14 @@ class YiuAxios<D = any, L = any, T = any, > {
                      try {
                          tempConfig.hook.sendFinally()
                      } catch (e) {
-                         yC.debug && console.error(e)
+                         yC?.debug && console.error(e)
                      }
                  }
                  if (isFunction(tempConfig.finally)) {
                      try {
                          tempConfig.finally()
                      } catch (e) {
-                         yC.debug && console.error(e)
+                         yC?.debug && console.error(e)
                      }
                  }
              })
