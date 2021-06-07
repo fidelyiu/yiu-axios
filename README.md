@@ -249,7 +249,42 @@ yiuAxios.send({
   - 同`success`
 
 ```typescript
-...
+const yiuAxiosInstance = yiuAxios.create<any, any, 'console' | 'other'>({
+    tips: {
+        type: 'other',
+        show: true,
+        showFunc: ({ isSuccess, type, title, content }) => {
+            const typeStr = isSuccess ? '成功' : '失败'
+            switch (type) {
+                case 'other':
+                    console.warn(`${typeStr}-${title}：${content}`)
+                    break
+                case 'console':
+                default:
+                    console.log(`${typeStr}-${title}：${content}`)
+            }
+        },
+        success: {
+            title: '成功默认标题',
+            content: '成功默认内容',
+        },
+        error: {
+            title: '失败默认标题',
+            content: '失败默认内容',
+        },
+    },
+})
+
+yiuAxiosInstance.send(
+        {
+            // yiu-axios的配置
+            api: {
+                url: '/yiu',
+                method: 'GET',
+            },
+        },
+        axios.create(),
+)
 
 ```
 
