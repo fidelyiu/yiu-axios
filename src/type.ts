@@ -144,7 +144,7 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
             /**
              * 是否展示失败消息，比上级的优先级高
              */
-            show: boolean
+            show?: boolean
             /**
              * 展示失败消息的方式，比上级的优先级高
              */
