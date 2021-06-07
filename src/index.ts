@@ -7,8 +7,8 @@ export const yiuAxios = {
     create: function (c: YiuRequestConfig): YiuAxios {
         return new YiuAxios(c)
     },
-    send<D = any, L = any, T = any>(yC: YiuRequestConfig<D, L, T>, aC?: AxiosRequestConfig, a?: AxiosInstance): Canceler | undefined {
-        return _yiuAxios.send<D, L, T>(yC, aC, a)
+    send<D = any, L = any, T = any>(yC: YiuRequestConfig<D, L, T>, a?: AxiosInstance, aC?: AxiosRequestConfig): Canceler | undefined {
+        return _yiuAxios.send<D, L, T>(yC, a, aC)
     },
 }
 
@@ -20,7 +20,7 @@ class YiuAxios<D = any, L = any, T = any, > {
         this.yiuConfig = c
     }
 
-    send<D = any, L = any, T = any>(yC: YiuRequestConfig<D, L, T>, aC?: AxiosRequestConfig, a?: AxiosInstance): Canceler | undefined {
+    send<D, L, T>(yC: YiuRequestConfig<D, L, T>, a?: AxiosInstance, aC?: AxiosRequestConfig): Canceler | undefined {
         let cancel: Canceler | undefined = undefined
         const tempConfig: YiuRequestConfig<D, L, T> = Object.assign({}, this.yiuConfig, yC)
         let axiosConfig = transformConfig(tempConfig, aC)
