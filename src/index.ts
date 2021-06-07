@@ -31,7 +31,10 @@ class YiuAxios<D = any, L = any, T = any, > {
                 str = `[${axiosConfig.method}: ${axiosConfig.url}]`
             }
             console.log(`yiu-axios：以阻止${str}请求发送`)
+            console.log('AxiosRequestConfig：')
             console.log(axiosConfig)
+            console.log('YiuRequestConfig：')
+            console.log(tempConfig)
             return
         }
         if (axiosConfig) {
@@ -40,7 +43,9 @@ class YiuAxios<D = any, L = any, T = any, > {
             }
             if (tempConfig.hook
                 && isFunction(tempConfig.hook.beforeSend)) {
-                tempConfig.hook.beforeSend(axiosConfig)
+                if (!tempConfig.hook.beforeSend(axiosConfig)) {
+                    return
+                }
             }
             // 开启加载
             if (tempConfig.loading && isFunction(tempConfig.loading.beforeSendFunc)) {
@@ -66,9 +71,11 @@ class YiuAxios<D = any, L = any, T = any, > {
             a.request<D>(axiosConfig)
              .then((res) => {
                  if (tempConfig.hook
-                     && isFunction(tempConfig.hook.sendSuccess)) {
+                     && isFunction(tempConfig.hook.beforeSuccess)) {
                      try {
-                         tempConfig.hook.sendSuccess(res)
+                         if (!tempConfig.hook.beforeSuccess(res)) {
+                             return
+                         }
                      } catch (e) {
                          yC?.debug && console.error(e)
                      }
@@ -88,6 +95,7 @@ class YiuAxios<D = any, L = any, T = any, > {
                              && isFunction(tempConfig.tips.success.showFunc)) {
                              tempConfig.tips.success.showFunc({
                                  type: tempConfig.tips.success.type || tempConfig.tips.type,
+                                 result: res,
                                  content: tempConfig.tips.success.content,
                                  title: tempConfig.tips.success.title,
                              })
@@ -97,6 +105,7 @@ class YiuAxios<D = any, L = any, T = any, > {
                              tempConfig.tips.showFunc({
                                  isSuccess: true,
                                  type: tempConfig.tips.success.type || tempConfig.tips.type,
+                                 result: res,
                                  content: tempConfig.tips.success.content,
                                  title: tempConfig.tips.success.title,
                              })
@@ -115,9 +124,11 @@ class YiuAxios<D = any, L = any, T = any, > {
              })
              .catch((err) => {
                  if (tempConfig.hook
-                     && isFunction(tempConfig.hook.sendError)) {
+                     && isFunction(tempConfig.hook.beforeError)) {
                      try {
-                         tempConfig.hook.sendError(err)
+                         if (!tempConfig.hook.beforeError(err)) {
+                             return
+                         }
                      } catch (e) {
                          yC?.debug && console.error(e)
                      }
@@ -137,6 +148,7 @@ class YiuAxios<D = any, L = any, T = any, > {
                              && isFunction(tempConfig.tips.error.showFunc)) {
                              tempConfig.tips.error.showFunc({
                                  type: tempConfig.tips.error.type || tempConfig.tips.type,
+                                 result: err,
                                  content: tempConfig.tips.error.content,
                                  title: tempConfig.tips.error.title,
                              })
@@ -145,6 +157,7 @@ class YiuAxios<D = any, L = any, T = any, > {
                              && isFunction(tempConfig.tips.showFunc)) {
                              tempConfig.tips.showFunc({
                                  isSuccess: false,
+                                 result: err,
                                  type: tempConfig.tips.error.type || tempConfig.tips.type,
                                  content: tempConfig.tips.error.content,
                                  title: tempConfig.tips.error.title,
@@ -176,9 +189,9 @@ class YiuAxios<D = any, L = any, T = any, > {
                      }
                  }
                  if (tempConfig.hook
-                     && isFunction(tempConfig.hook.sendFinally)) {
+                     && isFunction(tempConfig.hook.beforeFinally)) {
                      try {
-                         tempConfig.hook.sendFinally()
+                         tempConfig.hook.beforeFinally()
                      } catch (e) {
                          yC?.debug && console.error(e)
                      }

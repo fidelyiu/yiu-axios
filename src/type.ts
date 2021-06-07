@@ -101,6 +101,7 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
         showFunc?: (res: {
             isSuccess?: boolean
             type?: T
+            result?: any
             content?: any
             title?: any
         }) => void
@@ -121,6 +122,7 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
              */
             showFunc?: (res: {
                 type?: T
+                result?: any
                 content?: any
                 title?: any
             }) => void
@@ -150,6 +152,7 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
              */
             showFunc?: (res: {
                 type?: any
+                result?: any
                 content?: any
                 title?: any
             }) => void
@@ -178,19 +181,19 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
          *
          * 返回`false`则不继续处理后续代码
          */
-        sendSuccess?: (res: AxiosResponse<D>) => boolean
+        beforeSuccess?: (res: AxiosResponse<D>) => boolean
         /**
          * 发送请求失败后
          *
          * 返回`false`则不继续处理后续代码
          */
-        sendError?: (err: any) => boolean
+        beforeError?: (err: any) => boolean
         /**
          * 发送请求后
          *
          * 返回`false`则不继续处理后续代码
          */
-        sendFinally?: () => boolean
+        beforeFinally?: () => boolean
     }
     /**
      * 路径有没有花括号，否则路径中包含{}会报错，停止请求，因为这是链接参数的定义关键字

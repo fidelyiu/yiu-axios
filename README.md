@@ -236,6 +236,7 @@ yiuAxios.send({
 - `showFunc`：展示成功消息的方法
   - `isSuccess`：是否是成功消息
   - `type`：消息类型
+  - `result`：请求后的结果
   - `content`：消息内容
   - `title`：消息标题
 - `success`：成功后的消息配置
@@ -243,6 +244,7 @@ yiuAxios.send({
   - `show`：同上级`show`，比上级的优先级高
   - `showFunc`：同上级`showFunc`，比上级的优先级高
     - `type`：消息类型
+    - `result`：请求成功后的结果
     - `content`：消息内容
     - `title`：消息标题
 - `error`：成功后的消息配置
@@ -253,8 +255,9 @@ const yiuAxiosInstance = yiuAxios.create<any, any, 'console' | 'other'>({
     tips: {
         type: 'other',
         show: true,
-        showFunc: ({ isSuccess, type, title, content }) => {
+        showFunc: ({ isSuccess, result, type, title, content }) => {
             const typeStr = isSuccess ? '成功' : '失败'
+            console.log('请求结果', result)
             switch (type) {
                 case 'other':
                     console.warn(`${typeStr}-${title}：${content}`)
@@ -288,6 +291,24 @@ yiuAxiosInstance.send(
 
 ```
 
+
+## 3.5.hook
+请求的钩子函数。
+- `beforeSend`：
+  - 发送请求前，返回 `false` 则不继续处理后续代码。
+  - 参数 `config` 为 `AC`，即最终交给 `axios` 发送请求的配置对象，此处你可以修改它。
+- `beforeSuccess`：
+  - 发送请求成功后，返回 `false` 则不继续处理后续代码。
+  - 参数 `res` 为请求成功后的结果。
+- `beforeError`：
+  - 发送请求失败后，返回 `false` 则不继续处理后续代码。
+  - 参数 `err` 为请求失败后的结果。
+- `beforeFinally`：
+  - 发送请求后，返回`false`则不继续处理后续代码。
+
+```typescript
+
+```
 
 
 # 3.三次封装
