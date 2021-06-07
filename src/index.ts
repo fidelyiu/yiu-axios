@@ -1,7 +1,7 @@
 import { YiuRequestConfig } from './type'
 import axios, { AxiosInstance, AxiosRequestConfig, Canceler } from 'axios'
 import { transformConfig } from './transform'
-import { isFunction, merge } from 'lodash-es'
+import { isBoolean, isFunction, merge } from 'lodash-es'
 
 export const yiuAxios = {
     create<D = any, L = any, T = any>(c: YiuRequestConfig<D, L, T>): YiuAxios {
@@ -73,7 +73,9 @@ class YiuAxios<D = any, L = any, T = any, > {
                      }
                  }
                  if (tempConfig.tips?.success
-                     && tempConfig.tips.success.show
+                     && (
+                         isBoolean(tempConfig.tips.success.show) ? tempConfig.tips.success.show : tempConfig.tips.show
+                     )
                      && isFunction(tempConfig.tips.success.showFunc)) {
                      try {
                          tempConfig.tips.success.showFunc({
@@ -103,7 +105,9 @@ class YiuAxios<D = any, L = any, T = any, > {
                      }
                  }
                  if (tempConfig.tips?.error
-                     && tempConfig.tips.error.show
+                     && (
+                         isBoolean(tempConfig.tips.error.show) ? tempConfig.tips.error.show : tempConfig.tips.show
+                     )
                      && isFunction(tempConfig.tips.error.showFunc)) {
                      try {
                          tempConfig.tips.error.showFunc({
