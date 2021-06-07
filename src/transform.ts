@@ -1,66 +1,82 @@
 import { ContentTypeEnum, YiuRequestConfig } from './type'
-import { AxiosRequestConfig } from 'axios'
+import { AxiosRequestConfig, Method } from 'axios'
 import { checkConfig, checkPathData } from './check'
 import { isArray, isFunction, mapKeys } from 'lodash-es'
 import qs from 'qs'
 
-export function transformConfig(config: YiuRequestConfig): AxiosRequestConfig | undefined {
+export function transformConfig(yC: YiuRequestConfig, aC?: AxiosRequestConfig): AxiosRequestConfig | undefined {
     // 检查之前的转换
-    if (!config.url && config.api?.url) {
-        config.url = config.api.url
+    if (!aC) {
+        aC = {}
     }
-    if (!config.method && config.api?.method) {
-        config.method = config.api.method
-    }
-    // 检查
-    if (!checkConfig(config)) {
+    transformUrl(yC)
+    transformMethod(yC)
+    if (!checkConfig(yC, aC)) {
         return
     }
-    // 转换前的处理
-    if (!transformPathData(config)) {
+    if (!transformPathData(yC, aC)) {
         return
     }
-    transformFormUrlEncoded(config)
-    transformFormData(config)
-    transformContentType(config)
+    transformFormUrlEncoded(yC)
+    transformFormData(yC)
+    transformContentType(yC)
     // 转换
-    let aC = config as AxiosRequestConfig
+    // let aC = yC as AxiosRequestConfig
     // 转换后的处理
-    transformLang(aC, config)
-    transformToken(aC, config)
+    transformLang(yC)
+    transformToken(yC)
+    aC = Object.assign({}, yC, aC)
     return aC
+}
+
+function transformUrl(yC: YiuRequestConfig) {
+    if (!yC.url && yC.api?.url) {
+        yC.url = yC.api.url
+    }
+}
+
+function transformMethod(yC: YiuRequestConfig) {
+    if (!yC.method && yC.api?.method) {
+        if (yC.api.method === 'FORM_DATA' || yC.api.method === 'FORM_URLENCODED') {
+            yC.method = 'POST'
+        } else {
+            yC.method = yC.api.method as Method
+        }
+    }
 }
 
 /**
  * 将`YiuHttpConfig`中的路径参数`pathData`，转换到路径`url`中
+ *
  * 转换结果：
+ *
  * - false：路径中还有{xxx}参数
  * - true：转换完成
  */
-function transformPathData(config: YiuRequestConfig): boolean {
-    let url = config.url
-    if (config.pathData) {
-        for (const key in config.pathData) {
-            if (config.pathData.hasOwnProperty(key) && url) {
-                url = url.replace('{' + key + '}', encodeURIComponent(config.pathData[key]))
+function transformPathData(yC: YiuRequestConfig, aC: AxiosRequestConfig): boolean {
+    let url = yC.url
+    if (url && yC.pathData) {
+        for (const key in yC.pathData) {
+            if (yC.pathData.hasOwnProperty(key) && url) {
+                url = url.replace('{' + key + '}', encodeURIComponent(yC.pathData[key]))
             }
         }
     }
-    config.url = url
-    return checkPathData(config)
+    yC.url = url
+    return checkPathData(yC)
 }
 
 /**
  * 处理FormUrlEncoded
+ *
  * 表单POST请求
- * @param config
  */
-function transformFormUrlEncoded(config: YiuRequestConfig): void {
-    if (config.method === 'FORM_URLENCODED') {
-        config.method = 'POST'
-        config.contentType = ContentTypeEnum.FORM_URLENCODED
-        if (config.data) {
-            config.data = qs.stringify(config.data, { arrayFormat: 'brackets' })
+function transformFormUrlEncoded(yC: YiuRequestConfig): void {
+    if (yC.api && yC.api.method === 'FORM_URLENCODED') {
+        yC.method = 'POST'
+        yC.contentType = ContentTypeEnum.FORM_URLENCODED
+        if (yC.data) {
+            yC.data = qs.stringify(yC.data, { arrayFormat: 'brackets' })
         }
     }
 }
@@ -69,13 +85,13 @@ function transformFormUrlEncoded(config: YiuRequestConfig): void {
  * 处理FormData
  * 上传POST请求
  */
-function transformFormData(config: YiuRequestConfig): void {
-    if (config.method === 'FORM_DATA') {
-        config.method = 'POST'
-        config.contentType = ContentTypeEnum.FORM_DATA
+function transformFormData(yC: YiuRequestConfig): void {
+    if (yC.api && yC.api.method === 'FORM_DATA') {
+        yC.method = 'POST'
+        yC.contentType = ContentTypeEnum.FORM_DATA
         const formData = new window.FormData()
-        if (config.data) {
-            mapKeys(config.data, (v, k) => {
+        if (yC.data) {
+            mapKeys(yC.data, (v, k) => {
                 if (isArray(v)) {
                     v.forEach((item) => {
                         formData.append(`${k}[]`, item)
@@ -84,27 +100,27 @@ function transformFormData(config: YiuRequestConfig): void {
                 formData.append(k, v)
             })
         }
-        if (config.upload?.file) {
-            formData.append(config.upload.key || 'file', config.upload.file, config.upload.name)
+        if (yC.upload?.file) {
+            formData.append(yC.upload.key || 'file', yC.upload.file, yC.upload.name)
         }
-        config.data = formData
+        yC.data = formData
     }
 }
 
 /**
  * 处理ContentType类型
  */
-function transformContentType(config: YiuRequestConfig): void {
-    if (config.contentType) {
-        if (!config.headers) config.headers = {}
-        config.headers['Content-Type'] = config.contentType
+function transformContentType(yC: YiuRequestConfig): void {
+    if (yC.contentType) {
+        if (!yC.headers) yC.headers = {}
+        yC.headers['Content-Type'] = yC.contentType
     }
 }
 
 /**
  * 处理国际化
  */
-function transformLang(aC: AxiosRequestConfig, yC: YiuRequestConfig): void {
+function transformLang(yC: YiuRequestConfig): void {
     if (!yC.headers) yC.headers = {}
     if (!yC.lang
         && yC.langFunc
@@ -114,14 +130,14 @@ function transformLang(aC: AxiosRequestConfig, yC: YiuRequestConfig): void {
     if (yC.lang
         && yC.langFunc
         && isFunction(yC.langFunc.set)) {
-        yC.langFunc.set(aC, yC.lang)
+        yC.langFunc.set(yC, yC.lang)
     }
 }
 
 /**
  * 处理token
  */
-function transformToken(aC: AxiosRequestConfig, yC: YiuRequestConfig): void {
+function transformToken(yC: YiuRequestConfig): void {
     if (!yC.headers) yC.headers = {}
     if (!yC.noToken) {
         if (!yC.token
@@ -132,7 +148,7 @@ function transformToken(aC: AxiosRequestConfig, yC: YiuRequestConfig): void {
         if (yC.token
             && yC.tokenFunc
             && isFunction(yC.tokenFunc.set)) {
-            yC.tokenFunc.set(aC, yC.token)
+            yC.tokenFunc.set(yC, yC.token)
         }
     }
 }

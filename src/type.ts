@@ -1,4 +1,4 @@
-import { AxiosRequestConfig, AxiosResponse, Method } from 'axios'
+import { AxiosInstance, AxiosRequestConfig, AxiosResponse, Canceler, Method } from 'axios'
 
 type YiuMethod = Method
     | 'form_data' | 'FORM_DATA'
@@ -22,18 +22,10 @@ export interface YiuAip {
 
 /**
  * - D：返回data类型
+ * - L：loading.flag类型
  * - T：消息类型：'none' | 'modal' | 'message' | 'notification' | undefined
  */
-export interface YiuRequestConfig<D = any, L = any, T = any> extends Omit<AxiosRequestConfig, 'url' | 'method'> {
-    /**
-     * 请求路径
-     */
-    url?: string
-    /**
-     * 请求方法
-     * `FORM_DATA`、`FORM_URLENCODED`、将会被转换成`POST`
-     */
-    method?: YiuMethod
+export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosRequestConfig {
     /**
      * 可以代替 url & method
      */
@@ -218,7 +210,7 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends Omit<AxiosR
          *
          * 比如：config.headers['Accept-Language'] = lang
          */
-        set?: (aC: AxiosRequestConfig, lang: string) => void
+        set?: (yC: AxiosRequestConfig, lang: string) => void
     }
     /**
      * 错误时是否打印日志
@@ -245,7 +237,7 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends Omit<AxiosR
          *
          * 要将token设置在哪里比如：config.headers['Authorization'] = token
          */
-        set?: (aC: AxiosRequestConfig, token: string) => void
+        set?: (yC: AxiosRequestConfig, token: string) => void
     }
     /**
      * 是否有取消函数
@@ -274,4 +266,10 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends Omit<AxiosR
          */
         name?: string
     }
+    /**
+     * 是否不发送请求
+     *
+     * 不发送请求就打印 axios 请求配置
+     */
+    noSend?: boolean
 }

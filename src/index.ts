@@ -1,5 +1,5 @@
 import { YiuRequestConfig } from './type'
-import axios, { AxiosInstance, Canceler } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, Canceler } from 'axios'
 import { transformConfig } from './transform'
 import { isFunction } from 'lodash-es'
 
@@ -7,19 +7,32 @@ export const yiuAxios = {
     create: function (c: YiuRequestConfig): YiuAxios {
         return new YiuAxios(c)
     },
+    send<D = any, L = any, T = any>(yC: YiuRequestConfig<D, L, T>, aC?: AxiosRequestConfig, a?: AxiosInstance): Canceler | undefined {
+        return _yiuAxios.send<D, L, T>(yC, aC, a)
+    },
 }
 
-export class YiuAxios {
-    yiuConfig: YiuRequestConfig
+
+class YiuAxios<D = any, L = any, T = any, > {
+    yiuConfig: YiuRequestConfig<D, L, T>
 
     constructor(c: YiuRequestConfig) {
         this.yiuConfig = c
     }
 
-    send<D = any, L = any, T = any, >(c: YiuRequestConfig<D, L, T>, a?: AxiosInstance): Canceler | undefined {
+    send<D = any, L = any, T = any>(yC: YiuRequestConfig<D, L, T>, aC?: AxiosRequestConfig, a?: AxiosInstance): Canceler | undefined {
         let cancel: Canceler | undefined = undefined
-        const tempConfig: YiuRequestConfig<D, T> = Object.assign({}, this.yiuConfig, c)
-        let axiosConfig = transformConfig(tempConfig)
+        const tempConfig: YiuRequestConfig<D, L, T> = Object.assign({}, this.yiuConfig, yC)
+        let axiosConfig = transformConfig(tempConfig, aC)
+        if (yC.noSend) {
+            let str = axiosConfig?.url
+            if (axiosConfig?.method && axiosConfig?.url) {
+                str = `[${axiosConfig.method}: ${axiosConfig.url}]`
+            }
+            console.log(`yiu-axios：以阻止${str}请求发送`)
+            console.log(axiosConfig)
+            return
+        }
         if (axiosConfig) {
             if (!a) {
                 a = axios.create(axiosConfig)
@@ -37,7 +50,7 @@ export class YiuAxios {
                         loadingKey: tempConfig.loading.key,
                     })
                 } catch (e) {
-                    c.debug && console.error(e)
+                    yC.debug && console.error(e)
                 }
             }
             if (tempConfig.cancel) {
@@ -56,7 +69,7 @@ export class YiuAxios {
                      try {
                          tempConfig.hook.sendSuccess(res)
                      } catch (e) {
-                         c.debug && console.error(e)
+                         yC.debug && console.error(e)
                      }
                  }
                  if (tempConfig.tips?.success
@@ -69,14 +82,14 @@ export class YiuAxios {
                              title: tempConfig.tips.success.title,
                          })
                      } catch (e) {
-                         c.debug && console.error(e)
+                         yC.debug && console.error(e)
                      }
                  }
                  if (isFunction(tempConfig.success)) {
                      try {
                          tempConfig.success(res)
                      } catch (e) {
-                         c.debug && console.error(e)
+                         yC.debug && console.error(e)
                      }
                  }
              })
@@ -86,7 +99,7 @@ export class YiuAxios {
                      try {
                          tempConfig.hook.sendError(err)
                      } catch (e) {
-                         c.debug && console.error(e)
+                         yC.debug && console.error(e)
                      }
                  }
                  if (tempConfig.tips?.error
@@ -99,14 +112,14 @@ export class YiuAxios {
                              title: tempConfig.tips.error.title,
                          })
                      } catch (e) {
-                         c.debug && console.error(e)
+                         yC.debug && console.error(e)
                      }
                  }
                  if (isFunction(tempConfig.error)) {
                      try {
                          tempConfig.error(err)
                      } catch (e) {
-                         c.debug && console.error(e)
+                         yC.debug && console.error(e)
                      }
                  }
              })
@@ -120,7 +133,7 @@ export class YiuAxios {
                              loadingKey: tempConfig.loading.key,
                          })
                      } catch (e) {
-                         c.debug && console.error(e)
+                         yC.debug && console.error(e)
                      }
                  }
                  if (tempConfig.hook
@@ -128,18 +141,22 @@ export class YiuAxios {
                      try {
                          tempConfig.hook.sendFinally()
                      } catch (e) {
-                         c.debug && console.error(e)
+                         yC.debug && console.error(e)
                      }
                  }
                  if (isFunction(tempConfig.finally)) {
                      try {
                          tempConfig.finally()
                      } catch (e) {
-                         c.debug && console.error(e)
+                         yC.debug && console.error(e)
                      }
                  }
              })
+        } else {
+            yC.debug && console.error('yiu-axios：yiuConfig 转换 axios 出错，请求未发出!')
         }
         return cancel
     }
 }
+
+const _yiuAxios = new YiuAxios({})
