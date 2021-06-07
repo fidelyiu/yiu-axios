@@ -94,7 +94,7 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
         /**
          * 是否展示消息
          */
-        show: boolean
+        show?: boolean
         /**
          * 成功Tips的配置
          */
