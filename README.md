@@ -276,14 +276,14 @@ const yiuAxiosInstance = yiuAxios.create<any, any, 'console' | 'other'>({
 })
 
 yiuAxiosInstance.send(
-        {
-            // yiu-axios的配置
-            api: {
-                url: '/yiu',
-                method: 'GET',
-            },
+    {
+        // yiu-axios的配置
+        api: {
+            url: '/yiu',
+            method: 'GET',
         },
-        axios.create(),
+    },
+    axios.create(),
 )
 
 ```
