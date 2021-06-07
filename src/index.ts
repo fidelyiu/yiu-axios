@@ -73,18 +73,27 @@ class YiuAxios<D = any, L = any, T = any, > {
                          yC?.debug && console.error(e)
                      }
                  }
-                 if (tempConfig.tips?.success
-                     && (
-                         isBoolean(tempConfig.tips.success.show) ? tempConfig.tips.success.show : tempConfig.tips.show
-                     )) {
+                 let showSuccess = false
+                 if (tempConfig.tips
+                     && tempConfig.tips.success
+                     && isBoolean(tempConfig.tips.success.show)) {
+                     showSuccess = tempConfig.tips.success.show
+                 } else if (tempConfig.tips && isBoolean(tempConfig.tips.show)) {
+                     showSuccess = tempConfig.tips.show
+                 }
+                 if (showSuccess) {
                      try {
-                         if (isFunction(tempConfig.tips.success.showFunc)) {
+                         if (tempConfig.tips
+                             && tempConfig.tips.success
+                             && isFunction(tempConfig.tips.success.showFunc)) {
                              tempConfig.tips.success.showFunc({
                                  type: tempConfig.tips.success.type || tempConfig.tips.type,
                                  content: tempConfig.tips.success.content,
                                  title: tempConfig.tips.success.title,
                              })
-                         } else if (isFunction(tempConfig.tips.showFunc)) {
+                         } else if (tempConfig.tips
+                             && tempConfig.tips.success
+                             && isFunction(tempConfig.tips.showFunc)) {
                              tempConfig.tips.showFunc({
                                  isSuccess: true,
                                  type: tempConfig.tips.success.type || tempConfig.tips.type,
@@ -113,18 +122,27 @@ class YiuAxios<D = any, L = any, T = any, > {
                          yC?.debug && console.error(e)
                      }
                  }
-                 if (tempConfig.tips?.error
-                     && (
-                         isBoolean(tempConfig.tips.error.show) ? tempConfig.tips.error.show : tempConfig.tips.show
-                     )) {
+                 let showError = false
+                 if (tempConfig.tips
+                     && tempConfig.tips.error
+                     && isBoolean(tempConfig.tips.error.show)) {
+                     showError = tempConfig.tips.error.show
+                 } else if (tempConfig.tips && isBoolean(tempConfig.tips.show)) {
+                     showError = tempConfig.tips.show
+                 }
+                 if (showError) {
                      try {
-                         if (isFunction(tempConfig.tips.error.showFunc)) {
+                         if (tempConfig.tips
+                             && tempConfig.tips.error
+                             && isFunction(tempConfig.tips.error.showFunc)) {
                              tempConfig.tips.error.showFunc({
                                  type: tempConfig.tips.error.type || tempConfig.tips.type,
                                  content: tempConfig.tips.error.content,
                                  title: tempConfig.tips.error.title,
                              })
-                         } else if (isFunction(tempConfig.tips.showFunc)) {
+                         } else if (tempConfig.tips
+                             && tempConfig.tips.error
+                             && isFunction(tempConfig.tips.showFunc)) {
                              tempConfig.tips.showFunc({
                                  isSuccess: false,
                                  type: tempConfig.tips.error.type || tempConfig.tips.type,

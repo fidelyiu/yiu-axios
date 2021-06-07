@@ -28,7 +28,7 @@ export default [
                 esModule: false,
                 exports: 'named',
                 globals: {
-                    'lodash-es': 'lodashEs',
+                    'lodash-es': '_',
                 },
             },
             // ↓浏览器压缩版
@@ -39,7 +39,7 @@ export default [
                 esModule: false,
                 exports: 'named',
                 globals: {
-                    'lodash-es': 'lodashEs',
+                    'lodash-es': '_',
                 },
                 sourcemap: true,
                 plugins: [terser()],
