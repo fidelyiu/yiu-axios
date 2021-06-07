@@ -4,7 +4,7 @@ import { transformConfig } from './transform'
 import { isFunction } from 'lodash-es'
 
 export const yiuAxios = {
-    create<D = any, L = any, T = any>(c: YiuRequestConfig): YiuAxios {
+    create<D = any, L = any, T = any>(c: YiuRequestConfig<D, L, T>): YiuAxios {
         return new YiuAxios<D, L, T>(c)
     },
     send<D = any, L = any, T = any>(yC: YiuRequestConfig<D, L, T>, a?: AxiosInstance, aC?: AxiosRequestConfig): Canceler | undefined {
