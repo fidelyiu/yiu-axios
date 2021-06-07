@@ -1,7 +1,7 @@
 import { ContentTypeEnum, YiuRequestConfig } from './type'
 import { AxiosRequestConfig, Method } from 'axios'
 import { checkConfig, checkPathData } from './check'
-import { isArray, isFunction, mapKeys } from 'lodash-es'
+import { isArray, isFunction, mapKeys, merge } from 'lodash-es'
 import qs from 'qs'
 
 export function transformConfig(yC: YiuRequestConfig, aC?: AxiosRequestConfig): AxiosRequestConfig | undefined {
@@ -25,7 +25,7 @@ export function transformConfig(yC: YiuRequestConfig, aC?: AxiosRequestConfig): 
     // 转换后的处理
     transformLang(yC)
     transformToken(yC)
-    aC = Object.assign({}, yC, aC)
+    aC = merge({}, yC, aC)
     return aC
 }
 

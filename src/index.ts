@@ -1,7 +1,7 @@
 import { YiuRequestConfig } from './type'
 import axios, { AxiosInstance, AxiosRequestConfig, Canceler } from 'axios'
 import { transformConfig } from './transform'
-import { isFunction } from 'lodash-es'
+import { isFunction, merge } from 'lodash-es'
 
 export const yiuAxios = {
     create<D = any, L = any, T = any>(c: YiuRequestConfig<D, L, T>): YiuAxios {
@@ -22,7 +22,7 @@ class YiuAxios<D = any, L = any, T = any, > {
 
     send<D, L, T>(yC: YiuRequestConfig<D, L, T>, a?: AxiosInstance, aC?: AxiosRequestConfig): Canceler | undefined {
         let cancel: Canceler | undefined = undefined
-        const tempConfig: YiuRequestConfig<D, L, T> = Object.assign({}, this.yiuConfig, yC)
+        const tempConfig: YiuRequestConfig<D, L, T> = merge({}, this.yiuConfig, yC)
         let axiosConfig = transformConfig(tempConfig, aC)
         if (yC.noSend) {
             let str = axiosConfig?.url
