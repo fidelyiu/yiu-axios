@@ -9,6 +9,7 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "esModuleInterop": true,
+    "preserveConstEnums": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
