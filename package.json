@@ -1,6 +1,6 @@
 {
   "name": "yiu-axios-build",
-  "version": "1.0.39",
+  "version": "1.0.40",
   "description": "基于axios的二次封装库",
   "author": {
     "name": "Fidel Yiu",
@@ -22,7 +22,7 @@
   "type": "module",
   "unpkg": "dist/yiu-axios.onlib.iife.js",
   "jsdelivr": "dist/yiu-axios.onlib.iife.js",
-  "browser": "dist/yiu-axios.onlib.iife.js",
+  "browser": "dist/yiu-axios.min.cjs",
   "scripts": {
     "build": "tsc && rollup -c"
   },
