@@ -110,16 +110,15 @@ export default [
             },
             // Node
             {
-                file: `dist/${fileName}.cjs.js`,
+                file: `dist/${fileName}.cjs`,
                 format: 'cjs',
                 exports: 'named',
             },
             // Node压缩版
             {
-                file: `dist/${fileName}.cjs.min.js`,
+                file: `dist/${fileName}.min.cjs`,
                 format: 'cjs',
                 exports: 'named',
-                sourcemap: true,
                 plugins: [terser()],
             },
         ],
