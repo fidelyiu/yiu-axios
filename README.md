@@ -9,6 +9,25 @@
 
 以下 `YC` 为 `YiuRequestConfig` 的简写， `AC` 为 `AxiosRequestConfig` 的简写。
 
+## 安装
+npm：
+```bash
+npm i yiu-axios
+```
+
+yarn：
+```bash
+yarn add yiu-axios
+```
+
+浏览器无其他依赖：
+```html
+<script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.32/yiu-axios.iife.js"></script>
+```
+
+
 # 1.简单使用
 
 ## 1.1.yiuAxios.send()
@@ -537,7 +556,7 @@ setTimeout(()=>{
 如果不是 `ts` 直接赋值字符串。
 
 ```typescript
-import { ContentTypeEnum } from 'yiu-axios/dist/type'
+import { ContentTypeEnum } from 'yiu-axios/type'
 
 yiuAxios.send(
     {
@@ -559,7 +578,7 @@ yiuAxios.send(
 ```typescript
 import { yiuAxios } from 'yiu-axios'
 import axios, { Canceler } from 'axios'
-import { YiuRequestConfig } from 'yiu-axios/dist/type'
+import { YiuRequestConfig } from 'yiu-axios/type'
 import { Ref } from 'vue'
 
 const defYiuAxios = yiuAxios.create<any, Ref<boolean>>({
