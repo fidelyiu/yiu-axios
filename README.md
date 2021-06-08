@@ -22,14 +22,14 @@ yarn add yiu-axios
 
 浏览器无其他依赖：
 ```html
-<script src="https://unpkg.com/yiu-axios@1.0.38/yiu-axios.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.39/yiu-axios.iife.min.js"></script>
 ```
 
 浏览器有其他依赖：
 ```html
 <script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/yiu-axios@1.0.38/yiu-axios.onlib.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.39/yiu-axios.onlib.iife.min.js"></script>
 ```
 
 
@@ -67,6 +67,17 @@ defYiuAxios.send({
         method: 'GET',
     },
 }, defAxios)
+```
+
+## 1.3.node
+```typescript
+var Yiu = require("yiu-axios");
+Yiu.yiuAxios.send({
+    api: {
+        url: '/hello',
+        method: 'GET',
+    },
+});
 ```
 
 
