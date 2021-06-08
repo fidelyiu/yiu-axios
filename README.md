@@ -22,14 +22,14 @@ yarn add yiu-axios
 
 浏览器无其他依赖：
 ```html
-<script src="https://unpkg.com/yiu-axios@1.0.36/yiu-axios.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.37/yiu-axios.iife.min.js"></script>
 ```
 
 浏览器有其他依赖：
 ```html
 <script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/yiu-axios@1.0.36/yiu-axios.onlib.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.37/yiu-axios.onlib.iife.min.js"></script>
 ```
 
 
