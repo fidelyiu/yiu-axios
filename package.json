@@ -1,6 +1,6 @@
 {
   "name": "yiu-axios-build",
-  "version": "1.0.29",
+  "version": "1.0.34",
   "description": "基于axios的二次封装库",
   "author": {
     "name": "Fidel Yiu",
@@ -10,8 +10,14 @@
   "module": "dist/yiu-axios.esm.js",
   "types": "dist/yiu-axios.d.ts",
   "exports": {
-    "import": "./dist/yiu-axios.esm.js",
-    "require": "./dist/yiu-axios.cjs.js"
+    ".": {
+      "import": "./dist/yiu-axios.esm.js",
+      "require": "./dist/yiu-axios.cjs.js"
+    },
+    "./type": {
+      "import": "./dist/type.d.ts",
+      "require": "./dist/type.d.ts"
+    }
   },
   "type": "module",
   "unpkg": "dist/yiu-axios.iife.js",
