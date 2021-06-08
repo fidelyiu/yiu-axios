@@ -2,7 +2,7 @@ import { ContentTypeEnum, YiuRequestConfig } from './type'
 import { AxiosRequestConfig, Method } from 'axios'
 import { checkConfig, checkPathData } from './check'
 import { isArray, isFunction, mapKeys, merge } from 'lodash-es'
-import qs from 'qs'
+import { stringify } from 'qs'
 
 export function transformConfig(yC: YiuRequestConfig, aC?: AxiosRequestConfig): AxiosRequestConfig | undefined {
     // 检查之前的转换
@@ -76,7 +76,7 @@ function transformFormUrlEncoded(yC: YiuRequestConfig): void {
         yC.method = 'POST'
         yC.contentType = ContentTypeEnum.FORM_URLENCODED
         if (yC.data) {
-            yC.data = qs.stringify(yC.data, { arrayFormat: 'brackets' })
+            yC.data = stringify(yC.data, { arrayFormat: 'brackets' })
         }
     }
 }

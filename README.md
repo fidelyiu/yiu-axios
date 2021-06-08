@@ -47,7 +47,9 @@ defYiuAxios.send({
 
 
 # 2.配置优先级
-`axios配置` >> `yiu-axios配置` >> `yiu-axios默认配置` >> `axios默认配置`
+- `AC` >> `YC` >> `默认YC` >> `默认AC`
+- `yC.url` >> `YC.api.url`
+- `yC.method` >> `YC.api.method`
 
 以下案例最终将发送 `http://localhost:8080/axios` 的 `GET` 请求。
 ```typescript
@@ -280,7 +282,6 @@ const yiuAxiosInstance = yiuAxios.create<any, any, 'console' | 'other'>({
 
 yiuAxiosInstance.send(
     {
-        // yiu-axios的配置
         api: {
             url: '/yiu',
             method: 'GET',
@@ -297,21 +298,262 @@ yiuAxiosInstance.send(
 - `beforeSend`：
   - 发送请求前，返回 `false` 则不继续处理后续代码。
   - 参数 `config` 为 `AC`，即最终交给 `axios` 发送请求的配置对象，此处你可以修改它。
+  - 参数中存在 `YC` 的字段，但是此时 `YC` 以转换成 `AC`，所以请关注 `AC` 字段。
 - `beforeSuccess`：
-  - 发送请求成功后，返回 `false` 则不继续处理后续代码。
+  - 执行 `success` 前，返回 `false` 则不继续处理后续代码。
   - 参数 `res` 为请求成功后的结果。
 - `beforeError`：
-  - 发送请求失败后，返回 `false` 则不继续处理后续代码。
+  - 执行 `error` 前，返回 `false` 则不继续处理后续代码。
   - 参数 `err` 为请求失败后的结果。
 - `beforeFinally`：
-  - 发送请求后，返回`false`则不继续处理后续代码。
+  - 执行 `finally` 前，返回`false`则不继续处理后续代码。
 
 ```typescript
+const yiuAxiosInstance = yiuAxios.create({
+    hook: {
+        beforeSend: (ac) => {
+            console.log('发送请求前')
+            console.log(ac)
+            ac.headers['AnyUpdate'] = 'AnyUpdate'
+            return true
+        },
+        beforeSuccess: (res) => {
+            console.log('执行 success 前')
+            console.log(res)
+            return true
+        },
+        beforeError: (err) => {
+            console.log('执行 error 前')
+            console.log(err)
+            return true
+        },
+        beforeFinally: () => {
+            console.log('执行 finally 前')
+            return true
+        },
+    },
+})
+
+yiuAxiosInstance.send(
+    {
+        api: {
+            url: '/yiu',
+            method: 'GET',
+        },
+    },
+    axios.create(),
+)
 
 ```
 
 
-# 3.三次封装
+## 3.6.pathHasBracket
+`YC.api.url` 中是否有 `{}`。如果有的话，默认会报错，停止请求，因为这是链接参数的定义关键字。
+
+如果该字段为true，那么请手动检查链接是否正确。
+
+如果 `pathHasBracket` 和 `pathData` 配合使用还不能满足需求，那么直接使用 `AC.url`。
+
+```typescript
+const yiuAxiosInstance = yiuAxios.create({
+    baseURL: 'http://localhost:8080',
+    pathHasBracket: true,
+})
+
+yiuAxiosInstance.send(
+    {
+        api: {
+            url: '/yiu?str={hello}',
+            method: 'GET',
+        },
+    },
+    axios.create(),
+)
+```
+
+
+## 3.7.pathData
+路径参数，该对象的 `key` 对应的 `value` 将自动映射到 路径中的 `{key}`。
+
+`YC.url` 和 `YC.api.url` 是不允许有 `{}` 字符串存在的，如果有，将不会发送请求。
+
+开启 `debug` 后，未发送的请求会在控制台打印它的错误。
+
+如果需求有 `{}` 请配合 `pathHasBracket` 使用。
+
+但是在检查 `url` 前还是会进行 `pathData` 的转换，
+所以如果 `pathHasBracket` 和 `pathData` 配合使用还不能满足需求，
+请手动拼接 `AC.url`，因为 `yiu-axios` 不关心 `AC` 的配置。
+
+```typescript
+const yiuAxiosInstance = yiuAxios.create({
+    baseURL: 'http://localhost:8080',
+    debug: true,
+})
+
+yiuAxiosInstance.send(
+    {
+        api: {
+            url: '/yiu?str={hello}&num={num}',
+            method: 'GET',
+        },
+        pathData: {
+            hello: 'Fidel',
+            num: 15,
+        },
+    },
+    axios.create(),
+)
+```
+
+
+## 3.8.lang & langFunc
+- `lang`：当前请求的语言。
+- `langFunc`：语言配置方式。
+  - `get`：当 `lang` 不存在时才执行，获取当前语言。
+  - `set`：要将该语言设置在哪里的函数。
+    - 第一个参数 `YC`，
+    - 第二个参数 `lang`，如果 `YC.lang` 不存在，那么会执行 `YC.langFunc.get` 方法，然后再赋值给 `YC.lang`。
+
+只有 `lang` 或 `get` 方法值有效时，才会执行 `set` 方法。  
+
+```typescript
+const yiuAxiosInstance = yiuAxios.create({
+    baseURL: 'http://localhost:8080',
+    langFunc: {
+        get: () => {
+            // 比如从项目状态中获取语言信息
+            return 'zh-CN'
+        },
+        set: (yC, lang) => {
+            if (yC && lang) {
+                yC.headers['Accept-Language'] = lang
+            }
+        },
+    },
+})
+
+yiuAxiosInstance.send(
+    {
+        api: {
+            url: '/yiu',
+            method: 'GET',
+        },
+        lang: 'en-US'
+    },
+    axios.create(),
+)
+
+```
+
+
+## 3.9.debug
+当有些 `YC` 不满足要求时，请求将不发送。此时你可以使用 `debug` 来查看不发送的原因。
+
+`yiu-axios` 会将错误打印在控制台，比如下面的 `{}`。
+
+```typescript
+yiuAxios.send({
+    debug: true,
+    api: {
+        url: '/{id}/hello',
+        method: 'GET',
+    },
+}, axios.create())
+```
+
+## 3.10.noToken & token & tokenFunc
+- `noToken`：这个请求是否需要设置 `token`，如果为 `true` 将不会处理 `token` 和 `tokenFunc`。
+- `token`：该请求的 `token` 值。
+- `tokenFunc`：`token` 设置相关配置
+  - `get`：当 `token` 不存在时才执行，获取当前 `token`。
+  - `set`：设置token的函数。
+    - 第一个参数 `YC`，
+    - 第二个参数 `token`，如果 `YC.token` 不存在，那么会执行 `YC.tokenFunc.get` 方法，然后再赋值给 `YC.token`。
+
+```typescript
+const yiuAxiosInstance = yiuAxios.create({
+    baseURL: 'http://localhost:8080',
+    tokenFunc: {
+        get: () => {
+            // 比如从项目状态中获取语言信息
+            return 'my-token'
+        },
+        set: (yC, token) => {
+            if (yC && token) {
+                yC.headers['Authorization'] = token
+            }
+        },
+    },
+})
+
+yiuAxiosInstance.send(
+    {
+        api: {
+            url: '/yiu',
+            method: 'GET',
+        },
+    },
+    axios.create(),
+)
+```
+
+## 3.11.cancel
+是否生成取消函数。
+```typescript
+const cancelFunc = yiuAxios.send(
+    {
+        baseURL: 'http://localhost:8080',
+        api: {
+            url: '/yiu',
+            method: 'GET',
+        },
+        cancel: true,
+    },
+    axios.create(),
+)
+
+setTimeout(()=>{
+    if (cancelFunc) {
+        cancelFunc()
+    }
+}, 1000)
+```
+
+
+## 3.12.contentType
+请求头类型，将自动设置到 `YC.headers['Content-Type']` 中。
+
+`ContentTypeEnum` 类型：
+- `NONE`：无 `contentType`
+- `JSON`：`application/json;charset=UTF-8`
+- `HTML`：`text/html;charset=UTF-8`
+- `TEXT`：`text/plain;charset=UTF-8`
+- `XML`：`application/xml;charset=UTF-8`
+- `JS`：`application/javascript;charset=UTF-8`
+- `FORM_URLENCODED`：`application/x-www-form-urlencoded;charset=UTF-8`
+- `FORM_DATA`：`multipart/form-data;charset=UTF-8`
+
+如果不是 `ts` 直接赋值字符串。
+
+```typescript
+import { ContentTypeEnum } from 'yiu-axios/dist/type'
+
+yiuAxios.send(
+    {
+        baseURL: 'http://localhost:8080',
+        api: {
+            url: '/yiu',
+            method: 'GET',
+        },
+      contentType: ContentTypeEnum.JSON,
+    },
+    axios.create(),
+)
+```
+
+
+# 4.三次封装
 这里拿 `vue3` 的自动 `loading` 作为案例。
 
 ```typescript

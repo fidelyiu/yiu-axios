@@ -1,10 +1,10 @@
-import { AxiosInstance, AxiosRequestConfig, AxiosResponse, Canceler, Method } from 'axios'
+import { AxiosRequestConfig, AxiosResponse, Method } from 'axios'
 
 type YiuMethod = Method
     | 'form_data' | 'FORM_DATA'
     | 'form_urlencoded' | 'FORM_URLENCODED'
 
-export enum ContentTypeEnum {
+export const enum ContentTypeEnum {
     NONE = '',
     JSON = 'application/json;charset=UTF-8',
     HTML = 'text/html;charset=UTF-8',

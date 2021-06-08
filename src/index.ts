@@ -1,7 +1,7 @@
-import { YiuRequestConfig } from './type'
 import axios, { AxiosInstance, AxiosRequestConfig, Canceler } from 'axios'
 import { transformConfig } from './transform'
 import { isBoolean, isFunction, merge } from 'lodash-es'
+import { YiuRequestConfig } from './type'
 
 export const yiuAxios = {
     create<D = any, L = any, T = any>(c?: YiuRequestConfig<D, L, T>): YiuAxios {
