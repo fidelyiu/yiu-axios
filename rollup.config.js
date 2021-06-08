@@ -1,7 +1,6 @@
 import { terser } from 'rollup-plugin-terser'
 import typescript from '@rollup/plugin-typescript'
 import nodeResolve from '@rollup/plugin-node-resolve'
-import babel from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 
@@ -12,13 +11,12 @@ export default [
     {
         input,
         plugins: [
-            nodeResolve({ browser: true }),
             commonjs(),
-            typescript(),
+            nodeResolve({ browser: true }),
             json(),
-            babel({ babelHelpers: 'bundled' }),
+            typescript(),
         ],
-        external: ['lodash-es'],
+        // external: ['lodash-es'],
         output: [
             // ↓浏览器
             {
@@ -27,9 +25,9 @@ export default [
                 name: 'Yiu',
                 esModule: false,
                 exports: 'named',
-                globals: {
-                    'lodash-es': '_',
-                },
+                // globals: {
+                //     'lodash-es': '_',
+                // },
             },
             // ↓浏览器压缩版
             {
@@ -38,8 +36,48 @@ export default [
                 name: 'Yiu',
                 esModule: false,
                 exports: 'named',
+                // globals: {
+                //     'lodash-es': '_',
+                // },
+                sourcemap: true,
+                plugins: [terser()],
+            },
+        ],
+    },
+    {
+        input,
+        plugins: [
+            commonjs(),
+            nodeResolve({ browser: true }),
+            json(),
+            typescript(),
+        ],
+        external: ['lodash', 'axios'],
+        output: [
+            // ↓浏览器 去lodash-es、qs、axios 版
+            // <script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
+            // <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+            {
+                file: `dist/${fileName}.onlib.iife.js`,
+                format: 'iife',
+                name: 'Yiu',
+                esModule: false,
+                exports: 'named',
                 globals: {
-                    'lodash-es': '_',
+                    'lodash': '_',
+                    'axios': 'axios',
+                },
+            },
+            // ↓浏览器压缩版
+            {
+                file: `dist/${fileName}.onlib.iife.min.js`,
+                format: 'iife',
+                name: 'Yiu',
+                esModule: false,
+                exports: 'named',
+                globals: {
+                    'lodash': '_',
+                    'axios': 'axios',
                 },
                 sourcemap: true,
                 plugins: [terser()],
@@ -49,12 +87,12 @@ export default [
     {
         input,
         plugins: [
-            json(),
             commonjs(),
+            nodeResolve({ browser: true }),
             typescript(),
-            babel({ babelHelpers: 'bundled' }),
+            json(),
         ],
-        external: ['axios', 'lodash-es', 'qs'],
+        external: ['axios', 'lodash', 'qs'],
         output: [
             // 打包器
             {

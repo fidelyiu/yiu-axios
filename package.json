@@ -1,5 +1,5 @@
 {
-  "name": "yiu-axios",
+  "name": "yiu-axios-build",
   "version": "1.0.29",
   "description": "基于axios的二次封装库",
   "author": {
@@ -18,26 +18,21 @@
   "jsdelivr": "dist/yiu-axios.iife.js",
   "browser": "dist/yiu-axios.iife.js",
   "scripts": {
-    "build": "tsc && rollup -c",
-    "tsc:init": "tsc -init",
-    "npm:push": "npm publish"
+    "build": "tsc && rollup -c"
   },
   "license": "MIT",
-  "files": [
-    "dist/**/*"
-  ],
   "dependencies": {
     "axios": "^0.21.1",
+    "lodash": "^4.17.21",
     "qs": "^6.10.1"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
-    "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^19.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-typescript": "^8.2.1",
-    "@types/lodash-es": "^4.17.4",
+    "@types/lodash": "^4.14.170",
     "@types/qs": "^6.9.6",
     "rollup": "^2.50.6",
     "rollup-plugin-terser": "^7.0.2",

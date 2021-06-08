@@ -1,6 +1,6 @@
+import { isArray, isFunction, mapKeys, merge } from 'lodash'
 import { AxiosRequestConfig, Method } from 'axios'
 import { checkConfig, checkPathData } from './check'
-import { isArray, isFunction, mapKeys, merge } from 'lodash-es'
 import { stringify } from 'qs'
 import { ContentTypeEnum, YiuRequestConfig } from './type'
 
