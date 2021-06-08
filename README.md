@@ -22,9 +22,14 @@ yarn add yiu-axios
 
 浏览器无其他依赖：
 ```html
+<script src="https://unpkg.com/yiu-axios@1.0.35/yiu-axios.iife.js"></script>
+```
+
+浏览器有其他依赖：
+```html
 <script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/yiu-axios@1.0.32/yiu-axios.iife.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.35/yiu-axios.onlib.iife.js"></script>
 ```
 
 
@@ -434,7 +439,7 @@ yiuAxiosInstance.send(
     - 第一个参数 `YC`，
     - 第二个参数 `lang`，如果 `YC.lang` 不存在，那么会执行 `YC.langFunc.get` 方法，然后再赋值给 `YC.lang`。
 
-只有 `lang` 或 `get` 方法值有效时，才会执行 `set` 方法。  
+只有 `lang` 或 `get` 方法值有效时，才会执行 `set` 方法。
 
 ```typescript
 const yiuAxiosInstance = yiuAxios.create({
@@ -582,25 +587,25 @@ import { YiuRequestConfig } from 'yiu-axios/type'
 import { Ref } from 'vue'
 
 const defYiuAxios = yiuAxios.create<any, Ref<boolean>>({
-    baseURL: 'http://localhost:8080/',
-    timeout: 6000,
-    loading: {
-        beforeSendFunc: function ({ loading }) {
-            if (loading) {
-                loading.value = true
-            }
-        },
-        finallySendFunc: function ({ loading }) {
-            if (loading) {
-                loading.value = false
-            }
-        },
+  baseURL: 'http://localhost:8080/',
+  timeout: 6000,
+  loading: {
+    beforeSendFunc: function ({ loading }) {
+      if (loading) {
+        loading.value = true
+      }
     },
+    finallySendFunc: function ({ loading }) {
+      if (loading) {
+        loading.value = false
+      }
+    },
+  },
 })
 const defAxios = axios.create()
 
 export function yiuHttp<D = any, T = any>(c: YiuRequestConfig<D, T>): Canceler | undefined {
-    return defYiuAxios.send(c, defAxios)
+  return defYiuAxios.send(c, defAxios)
 }
 
 ```
@@ -611,26 +616,26 @@ import { defineComponent, ref } from 'vue'
 import { yiuHttp } from '/@/utils/http'
 
 export default defineComponent({
-    setup() {
-        const name = ref('Fidel')
-        const loading = ref(false)
-        yiuHttp({
-            api: {
-                method: 'GET',
-                url: '/hello',
-            },
-            loading: {
-                flag: loading,
-            },
-            finally: () => {
-                name.value = 'Yiu'
-            },
-        })
-        return {
-            name,
-            loading,
-        }
-    },
+  setup() {
+    const name = ref('Fidel')
+    const loading = ref(false)
+    yiuHttp({
+      api: {
+        method: 'GET',
+        url: '/hello',
+      },
+      loading: {
+        flag: loading,
+      },
+      finally: () => {
+        name.value = 'Yiu'
+      },
+    })
+    return {
+      name,
+      loading,
+    }
+  },
 })
 ```
 
