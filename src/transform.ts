@@ -1,8 +1,8 @@
-import { ContentTypeEnum, YiuRequestConfig } from './type'
 import { AxiosRequestConfig, Method } from 'axios'
 import { checkConfig, checkPathData } from './check'
 import { isArray, isFunction, mapKeys, merge } from 'lodash-es'
 import { stringify } from 'qs'
+import { ContentTypeEnum, YiuRequestConfig } from './type'
 
 export function transformConfig(yC: YiuRequestConfig, aC?: AxiosRequestConfig): AxiosRequestConfig | undefined {
     // 检查之前的转换

@@ -1,6 +1,6 @@
 import { AxiosRequestConfig, AxiosResponse, Method } from 'axios'
 
-type YiuMethod = Method
+export type YiuMethod = Method
     | 'form_data' | 'FORM_DATA'
     | 'form_urlencoded' | 'FORM_URLENCODED'
 

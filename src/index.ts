@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, Canceler } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, Canceler, Method } from 'axios'
 import { transformConfig } from './transform'
 import { isBoolean, isFunction, merge } from 'lodash-es'
 import { YiuRequestConfig } from './type'

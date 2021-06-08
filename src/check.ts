@@ -1,5 +1,5 @@
-import { YiuRequestConfig } from './type'
 import { AxiosRequestConfig } from 'axios'
+import { YiuRequestConfig } from './type'
 
 /**
  * 检查请求配置是否正确
