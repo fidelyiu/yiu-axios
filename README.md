@@ -1,4 +1,5 @@
 # Yiu Axios
+
 基于axios的二次封装。
 
 [`axios`](https://github.com/axios/axios) 库已经很好了，但是在发送请求时各种繁琐的细节，使得我们在项目使用 `axios` 的时候，始终需要二次封装。
@@ -10,123 +11,140 @@
 以下 `YC` 为 `YiuRequestConfig` 的简写， `AC` 为 `AxiosRequestConfig` 的简写。
 
 ## 安装
+
 npm：
+
 ```bash
 npm i yiu-axios
 ```
 
 yarn：
+
 ```bash
 yarn add yiu-axios
 ```
 
 浏览器无其他依赖：
+
 ```html
-<script src="https://unpkg.com/yiu-axios@1.0.44/yiu-axios.iife.min.js"></script>
+
+<script src="https://unpkg.com/yiu-axios@1.0.45/yiu-axios.iife.min.js"></script>
 ```
 
 浏览器有其他依赖：
+
 ```html
+
 <script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/yiu-axios@1.0.44/yiu-axios.onlib.iife.min.js"></script>
-```
+<script src="https://unpkg.com/yiu-axios@1.0.45/yiu-axios.onlib.iife.min.js"></script>
 
+<script>
+  console.log(YiuAxios)
+  // YiuAxios.yiuAxios.create()
+  // YiuAxios.yiuAxios.send()
+</script>
+```
 
 # 1.简单使用
 
 ## 1.1.yiuAxios.send()
+
 这将使用 `yiu-axios` 中默认的 `yiuAxios` 实例。
+
 ```typescript
 import { yiuAxios } from 'yiu-axios'
 
 yiuAxios.send({
-    api: {
-        url: '/hello',
-        method: 'GET',
-    },
+  api: {
+    url: '/hello',
+    method: 'GET',
+  },
 })
 ```
 
 ## 1.2.yiuAxios.create()
+
 这样你就可以维护多个 `axios` 和 `yiu-axios` 的实例了。
+
 ```typescript
 import { yiuAxios } from 'yiu-axios'
 import axios from 'axios'
 
 const defYiuAxios = yiuAxios.create({
-    baseURL: 'http://localhost:8080/',
-    timeout: 6000,
+  baseURL: 'http://localhost:8080/',
+  timeout: 6000,
 })
 
 const defAxios = axios.create()
 
 defYiuAxios.send({
-    api: {
-        url: '/hello',
-        method: 'GET',
-    },
+  api: {
+    url: '/hello',
+    method: 'GET',
+  },
 }, defAxios)
 ```
 
 ## 1.3.node
+
 ```typescript
-var Yiu = require("yiu-axios");
-Yiu.yiuAxios.send({
-    api: {
-        url: '/hello',
-        method: 'GET',
-    },
+var YiuAxios = require("yiu-axios");
+YiuAxios.yiuAxios.send({
+  api: {
+    url: '/hello',
+    method: 'GET',
+  },
 });
 ```
 
-
 # 2.配置优先级
+
 - `AC` >> `YC` >> `默认YC` >> `默认AC`
 - `yC.url` >> `YC.api.url`
 - `yC.method` >> `YC.api.method`
 
 以下案例最终将发送 `http://localhost:8080/axios` 的 `GET` 请求。
+
 ```typescript
 const defYiuAxios = yiuAxios.create({
-    // yiu-axios的默认配置
-    baseURL: 'http://localhost:8080/',
-    timeout: 6000,
+  // yiu-axios的默认配置
+  baseURL: 'http://localhost:8080/',
+  timeout: 6000,
 })
 
 const defAxios = axios.create({
-    // axios的默认配置
-    baseURL: 'http://localhost:8081/',
-    timeout: 6000,
+  // axios的默认配置
+  baseURL: 'http://localhost:8081/',
+  timeout: 6000,
 })
 
 defYiuAxios.send(
-    {
-        // yiu-axios的配置
-        api: {
+        {
+          // yiu-axios的配置
+          api: {
             url: '/yiu',
             method: 'GET',
+          },
         },
-    },
-    defAxios,
-    {
-        // axios的配置
-        url: '/axios'
-    },
+        defAxios,
+        {
+          // axios的配置
+          url: '/axios'
+        },
 )
 
 ```
 
-
 # 3.yiu-axios的配置
 
 ## 3.1.api
+
 将 `url`、`method` 提出来到 `api` 中是因为，我想将项目中的所有的接口都以这种方式的对象维护起来，方便同意管理。
 
 而且 `YC.api.method` 中比 `AC.method` 多两种类型：`FORM_DATA`、`FORM_URLENCODED`。
 
-如果你设置了这两种类型，最终都会发送 `POST` 请求，
-并且会处理 `YC.data` 会自动进行编码处理。
+如果你设置了这两种类型，最终都会发送 `POST` 请求， 并且会处理 `YC.data` 会自动进行编码处理。
 
 但要注意，如果你设置了 `AC.method`，那么 `YC.api.method` 将不会作用在最终的请求上。
 
@@ -135,15 +153,15 @@ import { yiuAxios } from 'yiu-axios'
 import axios from 'axios'
 
 yiuAxios.send({
-    api: {
-        url: '/hello',
-        method: 'GET',
-    },
+  api: {
+    url: '/hello',
+    method: 'GET',
+  },
 }, axios.create())
 ```
 
-
 ## 3.2.loading
+
 这也是我编写 `yiu-axios` 的主要原因，项目中那么多 `loading`，全部自己维护实在太难了。
 
 - `flag`：
@@ -165,109 +183,110 @@ yiuAxios.send({
   - 在请求后要如何修改 `loading`
   - 参数依次为：`flag`、`obj`、`key`。
 
-
 ### 3.2.1.obj + key
+
 基本所有情况都可以使用这种`obj` + `key`方式解决。
 
-最典型的场景就是 `vue2` 中 `data` 的 `boolean` 值，
-你可以通过传入 `this` 和 `booleanName` 来修改 `vue2` 中的变量。
+最典型的场景就是 `vue2` 中 `data` 的 `boolean` 值， 你可以通过传入 `this` 和 `booleanName` 来修改 `vue2` 中的变量。
 
 ```typescript
-const yiuAxiosInstance = yiuAxios.create<any, {value: boolean}>({
-    baseURL: 'http://localhost:8080/',
-    timeout: 6000,
-    loading: {
-        beforeSendFunc: function ({ loadingObj, loadingKey }) {
-            if (loadingObj && loadingKey) {
-                loadingObj[loadingKey] = true
-            }
-        },
-        finallySendFunc: function ({ loadingObj, loadingKey }) {
-            if (loadingObj && loadingKey) {
-                loadingObj[loadingKey] = false
-            }
-        },
+const yiuAxiosInstance = yiuAxios.create<any, { value: boolean }>({
+  baseURL: 'http://localhost:8080/',
+  timeout: 6000,
+  loading: {
+    beforeSendFunc: function ({ loadingObj, loadingKey }) {
+      if (loadingObj && loadingKey) {
+        loadingObj[loadingKey] = true
+      }
     },
+    finallySendFunc: function ({ loadingObj, loadingKey }) {
+      if (loadingObj && loadingKey) {
+        loadingObj[loadingKey] = false
+      }
+    },
+  },
 })
 
 let loadingFlag = {
-    isLoading: false
+  isLoading: false
 }
 
 yiuAxiosInstance.send({
-    api: {
-        url: '/hello',
-        method: 'GET',
-    },
-    loading: {
-        obj: loadingFlag,
-        key: 'isLoading',
-    },
+  api: {
+    url: '/hello',
+    method: 'GET',
+  },
+  loading: {
+    obj: loadingFlag,
+    key: 'isLoading',
+  },
 }, axios.create())
 
 ```
 
-
 ### 3.2.2.flag
-为什么有`obj`+`key`还需要`flag`?
-如果 `flag` 是 `vue3` 的 `Ref`，那么是不是会轻松许多?
+
+为什么有`obj`+`key`还需要`flag`? 如果 `flag` 是 `vue3` 的 `Ref`，那么是不是会轻松许多?
 
 ```typescript
-const yiuAxiosInstance = yiuAxios.create<any, {value: boolean}>({
-    baseURL: 'http://localhost:8080/',
-    timeout: 6000,
-    loading: {
-        beforeSendFunc: function ({ loading }) {
-            if (loading) {
-                loading.value = true
-            }
-        },
-        finallySendFunc: function ({ loading }) {
-            if (loading) {
-                loading.value = false
-            }
-        },
+const yiuAxiosInstance = yiuAxios.create<any, { value: boolean }>({
+  baseURL: 'http://localhost:8080/',
+  timeout: 6000,
+  loading: {
+    beforeSendFunc: function ({ loading }) {
+      if (loading) {
+        loading.value = true
+      }
     },
+    finallySendFunc: function ({ loading }) {
+      if (loading) {
+        loading.value = false
+      }
+    },
+  },
 })
 
 let loadingFlag = {
-    value: false
+  value: false
 }
 
 yiuAxiosInstance.send({
-    api: {
-        url: '/hello',
-        method: 'GET',
-    },
-    loading: {
-        flag: loadingFlag,
-    },
+  api: {
+    url: '/hello',
+    method: 'GET',
+  },
+  loading: {
+    flag: loadingFlag,
+  },
 }, axios.create())
 
 ```
 
 ## 3.3.success、error、finally
+
 三个请求的必要事件。
+
 ```typescript
 yiuAxios.send({
-    api: {
-        url: '/hello',
-        method: 'GET',
-    },
-    success: (res) => {
-        console.log(res)
-    },
-    error: (err) => {
-        console.log(err)
-    },
-    finally: () => {
-    },
+  api: {
+    url: '/hello',
+    method: 'GET',
+  },
+  success: (res) => {
+    console.log(res)
+  },
+  error: (err) => {
+    console.log(err)
+  },
+  finally: () => {
+  },
 })
 ```
 
-
 ## 3.4.tips
+
 消息展示
+
 - `type`：消息展示的类型，由`YC`的第三个泛型控制。
 - `show`：请求后是否展示消息
 - `showFunc`：展示成功消息的方法
@@ -289,47 +308,48 @@ yiuAxios.send({
 
 ```typescript
 const yiuAxiosInstance = yiuAxios.create<any, any, 'console' | 'other'>({
-    tips: {
-        type: 'other',
-        show: true,
-        showFunc: ({ isSuccess, result, type, title, content }) => {
-            const typeStr = isSuccess ? '成功' : '失败'
-            console.log('请求结果', result)
-            switch (type) {
-                case 'other':
-                    console.warn(`${typeStr}-${title}：${content}`)
-                    break
-                case 'console':
-                default:
-                    console.log(`${typeStr}-${title}：${content}`)
-            }
-        },
-        success: {
-            title: '成功默认标题',
-            content: '成功默认内容',
-        },
-        error: {
-            title: '失败默认标题',
-            content: '失败默认内容',
-        },
+  tips: {
+    type: 'other',
+    show: true,
+    showFunc: ({ isSuccess, result, type, title, content }) => {
+      const typeStr = isSuccess ? '成功' : '失败'
+      console.log('请求结果', result)
+      switch (type) {
+        case 'other':
+          console.warn(`${typeStr}-${title}：${content}`)
+          break
+        case 'console':
+        default:
+          console.log(`${typeStr}-${title}：${content}`)
+      }
     },
+    success: {
+      title: '成功默认标题',
+      content: '成功默认内容',
+    },
+    error: {
+      title: '失败默认标题',
+      content: '失败默认内容',
+    },
+  },
 })
 
 yiuAxiosInstance.send(
-    {
-        api: {
+        {
+          api: {
             url: '/yiu',
             method: 'GET',
+          },
         },
-    },
-    axios.create(),
+        axios.create(),
 )
 
 ```
 
-
 ## 3.5.hook
+
 请求的钩子函数。
+
 - `beforeSend`：
   - 发送请求前，返回 `false` 则不继续处理后续代码。
   - 参数 `config` 为 `AC`，即最终交给 `axios` 发送请求的配置对象，此处你可以修改它。
@@ -345,44 +365,44 @@ yiuAxiosInstance.send(
 
 ```typescript
 const yiuAxiosInstance = yiuAxios.create({
-    hook: {
-        beforeSend: (ac) => {
-            console.log('发送请求前')
-            console.log(ac)
-            ac.headers['AnyUpdate'] = 'AnyUpdate'
-            return true
-        },
-        beforeSuccess: (res) => {
-            console.log('执行 success 前')
-            console.log(res)
-            return true
-        },
-        beforeError: (err) => {
-            console.log('执行 error 前')
-            console.log(err)
-            return true
-        },
-        beforeFinally: () => {
-            console.log('执行 finally 前')
-            return true
-        },
+  hook: {
+    beforeSend: (ac) => {
+      console.log('发送请求前')
+      console.log(ac)
+      ac.headers['AnyUpdate'] = 'AnyUpdate'
+      return true
     },
+    beforeSuccess: (res) => {
+      console.log('执行 success 前')
+      console.log(res)
+      return true
+    },
+    beforeError: (err) => {
+      console.log('执行 error 前')
+      console.log(err)
+      return true
+    },
+    beforeFinally: () => {
+      console.log('执行 finally 前')
+      return true
+    },
+  },
 })
 
 yiuAxiosInstance.send(
-    {
-        api: {
+        {
+          api: {
             url: '/yiu',
             method: 'GET',
+          },
         },
-    },
-    axios.create(),
+        axios.create(),
 )
 
 ```
 
-
 ## 3.6.pathHasBracket
+
 `YC.api.url` 中是否有 `{}`。如果有的话，默认会报错，停止请求，因为这是链接参数的定义关键字。
 
 如果该字段为true，那么请手动检查链接是否正确。
@@ -391,23 +411,23 @@ yiuAxiosInstance.send(
 
 ```typescript
 const yiuAxiosInstance = yiuAxios.create({
-    baseURL: 'http://localhost:8080',
-    pathHasBracket: true,
+  baseURL: 'http://localhost:8080',
+  pathHasBracket: true,
 })
 
 yiuAxiosInstance.send(
-    {
-        api: {
+        {
+          api: {
             url: '/yiu?str={hello}',
             method: 'GET',
+          },
         },
-    },
-    axios.create(),
+        axios.create(),
 )
 ```
 
-
 ## 3.7.pathData
+
 路径参数，该对象的 `key` 对应的 `value` 将自动映射到 路径中的 `{key}`。
 
 `YC.url` 和 `YC.api.url` 是不允许有 `{}` 字符串存在的，如果有，将不会发送请求。
@@ -416,33 +436,32 @@ yiuAxiosInstance.send(
 
 如果需求有 `{}` 请配合 `pathHasBracket` 使用。
 
-但是在检查 `url` 前还是会进行 `pathData` 的转换，
-所以如果 `pathHasBracket` 和 `pathData` 配合使用还不能满足需求，
-请手动拼接 `AC.url`，因为 `yiu-axios` 不关心 `AC` 的配置。
+但是在检查 `url` 前还是会进行 `pathData` 的转换， 所以如果 `pathHasBracket` 和 `pathData` 配合使用还不能满足需求， 请手动拼接 `AC.url`，因为 `yiu-axios`
+不关心 `AC` 的配置。
 
 ```typescript
 const yiuAxiosInstance = yiuAxios.create({
-    baseURL: 'http://localhost:8080',
-    debug: true,
+  baseURL: 'http://localhost:8080',
+  debug: true,
 })
 
 yiuAxiosInstance.send(
-    {
-        api: {
+        {
+          api: {
             url: '/yiu?str={hello}&num={num}',
             method: 'GET',
-        },
-        pathData: {
+          },
+          pathData: {
             hello: 'Fidel',
             num: 15,
+          },
         },
-    },
-    axios.create(),
+        axios.create(),
 )
 ```
 
-
 ## 3.8.lang & langFunc
+
 - `lang`：当前请求的语言。
 - `langFunc`：语言配置方式。
   - `get`：当 `lang` 不存在时才执行，获取当前语言。
@@ -454,50 +473,51 @@ yiuAxiosInstance.send(
 
 ```typescript
 const yiuAxiosInstance = yiuAxios.create({
-    baseURL: 'http://localhost:8080',
-    langFunc: {
-        get: () => {
-            // 比如从项目状态中获取语言信息
-            return 'zh-CN'
-        },
-        set: (yC, lang) => {
-            if (yC && lang) {
-                yC.headers['Accept-Language'] = lang
-            }
-        },
+  baseURL: 'http://localhost:8080',
+  langFunc: {
+    get: () => {
+      // 比如从项目状态中获取语言信息
+      return 'zh-CN'
     },
+    set: (yC, lang) => {
+      if (yC && lang) {
+        yC.headers['Accept-Language'] = lang
+      }
+    },
+  },
 })
 
 yiuAxiosInstance.send(
-    {
-        api: {
+        {
+          api: {
             url: '/yiu',
             method: 'GET',
+          },
+          lang: 'en-US'
         },
-        lang: 'en-US'
-    },
-    axios.create(),
+        axios.create(),
 )
 
 ```
 
-
 ## 3.9.debug
+
 当有些 `YC` 不满足要求时，请求将不发送。此时你可以使用 `debug` 来查看不发送的原因。
 
 `yiu-axios` 会将错误打印在控制台，比如下面的 `{}`。
 
 ```typescript
 yiuAxios.send({
-    debug: true,
-    api: {
-        url: '/{id}/hello',
-        method: 'GET',
-    },
+  debug: true,
+  api: {
+    url: '/{id}/hello',
+    method: 'GET',
+  },
 }, axios.create())
 ```
 
 ## 3.10.noToken & token & tokenFunc
+
 - `noToken`：这个请求是否需要设置 `token`，如果为 `true` 将不会处理 `token` 和 `tokenFunc`。
 - `token`：该请求的 `token` 值。
 - `tokenFunc`：`token` 设置相关配置
@@ -508,58 +528,61 @@ yiuAxios.send({
 
 ```typescript
 const yiuAxiosInstance = yiuAxios.create({
-    baseURL: 'http://localhost:8080',
-    tokenFunc: {
-        get: () => {
-            // 比如从项目状态中获取语言信息
-            return 'my-token'
-        },
-        set: (yC, token) => {
-            if (yC && token) {
-                yC.headers['Authorization'] = token
-            }
-        },
+  baseURL: 'http://localhost:8080',
+  tokenFunc: {
+    get: () => {
+      // 比如从项目状态中获取语言信息
+      return 'my-token'
     },
+    set: (yC, token) => {
+      if (yC && token) {
+        yC.headers['Authorization'] = token
+      }
+    },
+  },
 })
 
 yiuAxiosInstance.send(
-    {
-        api: {
+        {
+          api: {
             url: '/yiu',
             method: 'GET',
+          },
         },
-    },
-    axios.create(),
+        axios.create(),
 )
 ```
 
 ## 3.11.cancel
+
 是否生成取消函数。
+
 ```typescript
 const cancelFunc = yiuAxios.send(
-    {
-        baseURL: 'http://localhost:8080',
-        api: {
+        {
+          baseURL: 'http://localhost:8080',
+          api: {
             url: '/yiu',
             method: 'GET',
+          },
+          cancel: true,
         },
-        cancel: true,
-    },
-    axios.create(),
+        axios.create(),
 )
 
-setTimeout(()=>{
-    if (cancelFunc) {
-        cancelFunc()
-    }
+setTimeout(() => {
+  if (cancelFunc) {
+    cancelFunc()
+  }
 }, 1000)
 ```
 
-
 ## 3.12.contentType
+
 请求头类型，将自动设置到 `YC.headers['Content-Type']` 中。
 
 `ContentTypeEnum` 类型：
+
 - `NONE`：无 `contentType`
 - `JSON`：`application/json;charset=UTF-8`
 - `HTML`：`text/html;charset=UTF-8`
@@ -575,20 +598,20 @@ setTimeout(()=>{
 import { ContentTypeEnum } from 'yiu-axios/type'
 
 yiuAxios.send(
-    {
-        baseURL: 'http://localhost:8080',
-        api: {
+        {
+          baseURL: 'http://localhost:8080',
+          api: {
             url: '/yiu',
             method: 'GET',
+          },
+          contentType: ContentTypeEnum.JSON,
         },
-      contentType: ContentTypeEnum.JSON,
-    },
-    axios.create(),
+        axios.create(),
 )
 ```
 
-
 # 4.三次封装
+
 这里拿 `vue3` 的自动 `loading` 作为案例。
 
 ```typescript
@@ -622,6 +645,7 @@ export function yiuHttp<D = any, T = any>(c: YiuRequestConfig<D, T>): Canceler |
 ```
 
 使用
+
 ```typescript
 import { defineComponent, ref } from 'vue'
 import { yiuHttp } from '/@/utils/http'

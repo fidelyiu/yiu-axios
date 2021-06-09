@@ -22,7 +22,7 @@ export default [
             {
                 file: `dist/${fileName}.iife.js`,
                 format: 'iife',
-                name: 'Yiu',
+                name: 'YiuAxios',
                 esModule: false,
                 exports: 'named',
                 // globals: {
@@ -33,7 +33,7 @@ export default [
             {
                 file: `dist/${fileName}.iife.min.js`,
                 format: 'iife',
-                name: 'Yiu',
+                name: 'YiuAxios',
                 esModule: false,
                 exports: 'named',
                 // globals: {
@@ -60,7 +60,7 @@ export default [
             {
                 file: `dist/${fileName}.onlib.iife.js`,
                 format: 'iife',
-                name: 'Yiu',
+                name: 'YiuAxios',
                 esModule: false,
                 exports: 'named',
                 globals: {
@@ -72,7 +72,7 @@ export default [
             {
                 file: `dist/${fileName}.onlib.iife.min.js`,
                 format: 'iife',
-                name: 'Yiu',
+                name: 'YiuAxios',
                 esModule: false,
                 exports: 'named',
                 globals: {
