@@ -1,23 +1,34 @@
-import { AxiosRequestConfig, AxiosResponse, Method } from 'axios'
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
 
-export type YiuMethod = Method
-    | 'form_data' | 'FORM_DATA'
-    | 'form_urlencoded' | 'FORM_URLENCODED'
+export enum MethodEnum {
+    GET = 'GET',
+    DELETE = 'DELETE',
+    HEAD = 'HEAD',
+    OPTIONS = 'OPTIONS',
+    POST = 'POST',
+    POST_FORM_URLENCODED = 'FORM_URLENCODED',
+    POST_FORM_DATA = 'FORM_DATA',
+    PUT = 'PUT',
+    PATCH = 'PATCH',
+    PURGE = 'PURGE',
+    LINK = 'LINK',
+    UNLINK = 'UNLINK',
+}
 
 export enum ContentTypeEnum {
     NONE = '',
-    JSON = 'application/json;charset=UTF-8',
-    HTML = 'text/html;charset=UTF-8',
-    TEXT = 'text/plain;charset=UTF-8',
-    XML = 'application/xml;charset=UTF-8',
-    JS = 'application/javascript;charset=UTF-8',
-    FORM_URLENCODED = 'application/x-www-form-urlencoded;charset=UTF-8',
-    FORM_DATA = 'multipart/form-data;charset=UTF-8',
+    JSON = 'application/json',
+    HTML = 'text/html',
+    TEXT = 'text/plain',
+    XML = 'application/xml',
+    JS = 'application/javascript',
+    FORM_URLENCODED = 'application/x-www-form-urlencoded',
+    FORM_DATA = 'multipart/form-data',
 }
 
 export interface YiuAip {
     url: string
-    method: YiuMethod
+    method: MethodEnum
 }
 
 /**
@@ -263,6 +274,10 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
      * Content-Type
      */
     contentType?: ContentTypeEnum
+    /**
+     * Content的编码，默认值：UTF-8
+     */
+    contentCharset?: string
     /**
      * 上传相关配置
      *

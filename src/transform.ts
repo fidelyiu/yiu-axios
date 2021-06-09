@@ -2,7 +2,7 @@ import { isArray, isFunction, mapKeys, merge } from 'lodash'
 import { AxiosRequestConfig, Method } from 'axios'
 import { checkConfig, checkPathData } from './check'
 import { stringify } from 'qs'
-import { ContentTypeEnum, YiuRequestConfig } from './type'
+import { ContentTypeEnum, MethodEnum, YiuRequestConfig } from './type'
 
 export function transformConfig(yC: YiuRequestConfig, aC?: AxiosRequestConfig): AxiosRequestConfig | undefined {
     // 检查之前的转换
@@ -11,15 +11,15 @@ export function transformConfig(yC: YiuRequestConfig, aC?: AxiosRequestConfig): 
     }
     transformUrl(yC)
     transformMethod(yC)
+    transformContentType(yC)
     if (!checkConfig(yC, aC)) {
         return
     }
-    if (!transformPathData(yC, aC)) {
+    if (!transformPathData(yC)) {
         return
     }
     transformFormUrlEncoded(yC)
     transformFormData(yC)
-    transformContentType(yC)
     // 转换
     // let aC = yC as AxiosRequestConfig
     // 转换后的处理
@@ -37,8 +37,14 @@ function transformUrl(yC: YiuRequestConfig) {
 
 function transformMethod(yC: YiuRequestConfig) {
     if (!yC.method && yC.api?.method) {
-        if (yC.api.method === 'FORM_DATA' || yC.api.method === 'FORM_URLENCODED') {
+        if (yC.api.method === MethodEnum.POST_FORM_DATA || yC.api.method === MethodEnum.POST_FORM_URLENCODED) {
             yC.method = 'POST'
+            if (yC.api.method === MethodEnum.POST_FORM_DATA) {
+                yC.contentType = ContentTypeEnum.FORM_DATA
+            }
+            if (yC.api.method === MethodEnum.POST_FORM_URLENCODED) {
+                yC.contentType = ContentTypeEnum.FORM_URLENCODED
+            }
         } else {
             yC.method = yC.api.method as Method
         }
@@ -53,7 +59,7 @@ function transformMethod(yC: YiuRequestConfig) {
  * - false：路径中还有{xxx}参数
  * - true：转换完成
  */
-function transformPathData(yC: YiuRequestConfig, aC: AxiosRequestConfig): boolean {
+function transformPathData(yC: YiuRequestConfig): boolean {
     let url = yC.url
     if (url && yC.pathData) {
         for (const key in yC.pathData) {
@@ -72,9 +78,7 @@ function transformPathData(yC: YiuRequestConfig, aC: AxiosRequestConfig): boolea
  * 表单POST请求
  */
 function transformFormUrlEncoded(yC: YiuRequestConfig): void {
-    if (yC.api && yC.api.method === 'FORM_URLENCODED') {
-        yC.method = 'POST'
-        yC.contentType = ContentTypeEnum.FORM_URLENCODED
+    if (yC.contentType === ContentTypeEnum.FORM_URLENCODED) {
         if (yC.data) {
             yC.data = stringify(yC.data, { arrayFormat: 'brackets' })
         }
@@ -86,9 +90,7 @@ function transformFormUrlEncoded(yC: YiuRequestConfig): void {
  * 上传POST请求
  */
 function transformFormData(yC: YiuRequestConfig): void {
-    if (yC.api && yC.api.method === 'FORM_DATA') {
-        yC.method = 'POST'
-        yC.contentType = ContentTypeEnum.FORM_DATA
+    if (yC.contentType === ContentTypeEnum.FORM_DATA) {
         const formData = new window.FormData()
         if (yC.data) {
             mapKeys(yC.data, (v, k) => {
@@ -113,7 +115,11 @@ function transformFormData(yC: YiuRequestConfig): void {
 function transformContentType(yC: YiuRequestConfig): void {
     if (yC.contentType) {
         if (!yC.headers) yC.headers = {}
-        yC.headers['Content-Type'] = yC.contentType
+        let charset = 'utf-8'
+        if (yC.contentCharset) {
+            charset = yC.contentCharset
+        }
+        yC.headers['Content-Type'] = `${yC.contentType};charset=${charset}`
     }
 }
 
