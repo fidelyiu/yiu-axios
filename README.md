@@ -28,7 +28,7 @@ yarn add yiu-axios
 
 ```html
 
-<script src="https://unpkg.com/yiu-axios@1.0.48/yiu-axios.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.49/yiu-axios.iife.min.js"></script>
 ```
 
 浏览器有其他依赖：
@@ -37,7 +37,7 @@ yarn add yiu-axios
 
 <script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/yiu-axios@1.0.48/yiu-axios.onlib.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.49/yiu-axios.onlib.iife.min.js"></script>
 
 <script>
     console.log(YiuAxios)

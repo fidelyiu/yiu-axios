@@ -28,7 +28,7 @@ export enum ContentTypeEnum {
 
 export interface YiuAip {
     url: string
-    method: MethodEnum
+    method: MethodEnum | string
 }
 
 /**
@@ -273,7 +273,7 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
     /**
      * Content-Type
      */
-    contentType?: ContentTypeEnum
+    contentType?: ContentTypeEnum | string
     /**
      * Content的编码，默认值：UTF-8
      */
