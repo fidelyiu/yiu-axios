@@ -28,7 +28,7 @@ yarn add yiu-axios
 
 ```html
 
-<script src="https://unpkg.com/yiu-axios@1.0.47/yiu-axios.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.48/yiu-axios.iife.min.js"></script>
 ```
 
 浏览器有其他依赖：
@@ -37,7 +37,7 @@ yarn add yiu-axios
 
 <script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/yiu-axios@1.0.47/yiu-axios.onlib.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.48/yiu-axios.onlib.iife.min.js"></script>
 
 <script>
     console.log(YiuAxios)
@@ -88,7 +88,56 @@ defYiuAxios.send({
 }, defAxios)
 ```
 
-## 1.3.node
+## 1.3.yiuAxios.create()
+
+返回一个`Promise`，方法主要用于并发请求。不然也没必要转`Promise`。
+
+此时是没有返回取消方法的，`YC` 没有 `success`、`error`、`finally`方法。
+
+```typescript
+import { yiuAxios } from 'yiu-axios'
+import { MethodEnum } from 'yiu-axios/type'
+
+Promise.all(
+    [
+        yiuAxios.sendPromise({
+            api: {
+                url: '/hello1',
+                method: MethodEnum.GET,
+            },
+        }),
+        yiuAxios.sendPromise({
+            api: {
+                url: '/hello2',
+                method: MethodEnum.GET,
+            },
+        })
+    ]
+)
+       .then(function (results) {
+           const acct = results[0];
+           const perm = results[1];
+       });
+
+
+```
+
+## 1.4.yiuAxios.sendPromiseAndCanceler()
+
+返回一个对象。
+
+即又返回Promise，也返回取消函数。
+
+取消函数由`YC.cancel`控制，此时`YC` 没有 `success`、`error`、`finally`方法。
+
+```
+{
+    promise: Promise<AxiosResponse<D>>,
+    canceler?: Canceler
+}
+```
+
+## 1.5.node
 
 ```typescript
 var YiuAxios = require("yiu-axios");
