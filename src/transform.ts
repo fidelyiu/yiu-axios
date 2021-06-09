@@ -37,6 +37,34 @@ function transformUrl(yC: YiuRequestConfig) {
 
 function transformMethod(yC: YiuRequestConfig) {
     if (!yC.method && yC.api?.method) {
+        if (!yC.api.noMethodCheck && yC.debug
+            && yC.api.method !== MethodEnum.GET
+            && yC.api.method !== MethodEnum.DELETE
+            && yC.api.method !== MethodEnum.HEAD
+            && yC.api.method !== MethodEnum.OPTIONS
+            && yC.api.method !== MethodEnum.POST
+            && yC.api.method !== MethodEnum.POST_FORM_URLENCODED
+            && yC.api.method !== MethodEnum.POST_FORM_DATA
+            && yC.api.method !== MethodEnum.PUT
+            && yC.api.method !== MethodEnum.PATCH
+            && yC.api.method !== MethodEnum.PURGE
+            && yC.api.method !== MethodEnum.LINK
+            && yC.api.method !== MethodEnum.UNLINK) {
+            console.warn(`YC.api.method无效值：${yC.api.method}`)
+            console.warn('YC.api.method有效值：MethodEnum' +
+                ' | \'GET\'' +
+                ' | \'DELETE\'' +
+                ' | \'HEAD\'' +
+                ' | \'OPTIONS\'' +
+                ' | \'POST\'' +
+                ' | \'FORM_URLENCODED\'' +
+                ' | \'FORM_DATA\'' +
+                ' | \'PUT\'' +
+                ' | \'PATCH\'' +
+                ' | \'PURGE\'' +
+                ' | \'LINK\'' +
+                ' | \'UNLINK\'')
+        }
         if (yC.api.method === MethodEnum.POST_FORM_DATA || yC.api.method === MethodEnum.POST_FORM_URLENCODED) {
             yC.method = 'POST'
             if (yC.api.method === MethodEnum.POST_FORM_DATA) {
@@ -114,6 +142,25 @@ function transformFormData(yC: YiuRequestConfig): void {
  */
 function transformContentType(yC: YiuRequestConfig): void {
     if (yC.contentType) {
+        if (!yC.noContentTypeCheck && yC.debug
+            && yC.contentType !== ContentTypeEnum.JSON
+            && yC.contentType !== ContentTypeEnum.HTML
+            && yC.contentType !== ContentTypeEnum.TEXT
+            && yC.contentType !== ContentTypeEnum.XML
+            && yC.contentType !== ContentTypeEnum.JS
+            && yC.contentType !== ContentTypeEnum.FORM_URLENCODED
+            && yC.contentType !== ContentTypeEnum.FORM_DATA) {
+            console.warn(`YC.contentType无效值：${yC.contentType}`)
+            console.warn('YC.contentType有效值：ContentTypeEnum' +
+                ' | \'\'' +
+                ' | \'application/json\'' +
+                ' | \'text/html\'' +
+                ' | \'text/plain\'' +
+                ' | \'application/xml\'' +
+                ' | \'application/javascript\'' +
+                ' | \'application/x-www-form-urlencoded\'' +
+                ' | \'multipart/form-data\'')
+        }
         if (!yC.headers) yC.headers = {}
         let charset = 'utf-8'
         if (yC.contentCharset) {

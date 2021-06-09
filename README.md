@@ -28,7 +28,7 @@ yarn add yiu-axios
 
 ```html
 
-<script src="https://unpkg.com/yiu-axios@1.0.49/yiu-axios.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.50/yiu-axios.iife.min.js"></script>
 ```
 
 浏览器有其他依赖：
@@ -37,7 +37,7 @@ yarn add yiu-axios
 
 <script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/yiu-axios@1.0.49/yiu-axios.onlib.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.50/yiu-axios.onlib.iife.min.js"></script>
 
 <script>
     console.log(YiuAxios)
@@ -145,8 +145,10 @@ var YiuAxios = require("yiu-axios");
 YiuAxios.yiuAxios.send({
     api: {
         url: '/hello',
-        method: 'GET',
+        method: 'get',
+        noMethod: true
     },
+    debug: true,
     contentType: 'application/json'
 });
 ```
@@ -203,6 +205,10 @@ defYiuAxios.send(
 
 - 不管 `YC.contentType` 有没有值， `YC.api.method` 的 `POST_FORM_DATA`、`POST_FORM_URLENCODED` 都将覆盖该值。
 - 如果你设置了 `AC.method`，那么 `YC.api.method` 将不会作用在最终的请求上。
+
+在 `debug` 模式下会检查 `YC.api.method` 的值是否规范。因为有些项目可能就是需要传入字符串，此时字符串如果乱填可能会影响 `yiu-axios` 判断。
+
+如果你确定你的填值确实不在 `yiu-axios` 指定值内，那么可以将 `noMethod` 指定为 `true` ，从而取消控制台警告。
 
 ```typescript
 import { yiuAxios } from 'yiu-axios'
@@ -639,6 +645,7 @@ setTimeout(() => {
 请求头类型，将自动设置到 `YC.headers['Content-Type']` 中。
 
 - `contentType`：会被 `YC.aip.method` 影响。
+- `noContentTypeCheck`：是否检查`contentType`。
 - `contentCharset`：`Content`的编码，默认值：`utf-8` 。
 
 `ContentTypeEnum` 类型：
@@ -653,6 +660,10 @@ setTimeout(() => {
 - `FORM_DATA`：`multipart/form-data`
 
 如果不是 `ts` 直接按照上面的字符串赋值赋值即可。
+
+在 `debug` 模式下会检查 `YC.contentType` 的值是否规范。因为有些项目可能就是需要传入字符串，此时字符串如果乱填可能会影响 `yiu-axios` 判断。
+
+如果你确定你的填值确实不在 `yiu-axios` 指定值内，那么可以将 `noContentTypeCheck` 指定为 `true` ，从而取消控制台警告。
 
 ```typescript
 import { ContentTypeEnum, MethodEnum } from 'yiu-axios/type'

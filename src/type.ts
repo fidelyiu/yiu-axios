@@ -28,7 +28,24 @@ export enum ContentTypeEnum {
 
 export interface YiuAip {
     url: string
-    method: MethodEnum | string
+    method: MethodEnum
+        | 'GET'
+        | 'DELETE'
+        | 'HEAD'
+        | 'OPTIONS'
+        | 'POST'
+        | 'FORM_URLENCODED'
+        | 'FORM_DATA'
+        | 'PUT'
+        | 'PATCH'
+        | 'PURGE'
+        | 'LINK'
+        | 'UNLINK'
+
+    /**
+     * 不检查`YC.api.method`值是否规范
+     */
+    noMethodCheck?: boolean
 }
 
 /**
@@ -273,7 +290,21 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
     /**
      * Content-Type
      */
-    contentType?: ContentTypeEnum | string
+    contentType?: ContentTypeEnum
+        | ''
+        | 'application/json'
+        | 'text/html'
+        | 'text/plain'
+        | 'application/xml'
+        | 'application/javascript'
+        | 'application/x-www-form-urlencoded'
+        | 'multipart/form-data'
+
+    /**
+     * 不检查Content-Type值是否规范
+     */
+    noContentTypeCheck?: boolean
+
     /**
      * Content的编码，默认值：UTF-8
      */
