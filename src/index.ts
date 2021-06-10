@@ -146,98 +146,20 @@ class YiuAxios<D = any, L = any, T = any, > {
                 }
                 a.request<D>(axiosConfig)
                  .then((res) => {
-                     if (tempConfig.hook
-                         && isFunction(tempConfig.hook.beforeSuccess)) {
-                         try {
-                             if (!tempConfig.hook.beforeSuccess(res)) {
-                                 return
-                             }
-                         } catch (e) {
-                             yC?.debug && console.error(e)
+                     if (isFunction(tempConfig.isError) && tempConfig.isError(res)) {
+                         if (doError(tempConfig, res)) {
+                             reject(res)
                          }
+                         return
                      }
-                     let showSuccess = false
-                     if (tempConfig.tips
-                         && tempConfig.tips.success
-                         && isBoolean(tempConfig.tips.success.show)) {
-                         showSuccess = tempConfig.tips.success.show
-                     } else if (tempConfig.tips && isBoolean(tempConfig.tips.show)) {
-                         showSuccess = tempConfig.tips.show
+                     if (doSuccess<D>(tempConfig, res)) {
+                         resolve(res)
                      }
-                     if (showSuccess) {
-                         try {
-                             if (tempConfig.tips
-                                 && tempConfig.tips.success
-                                 && isFunction(tempConfig.tips.success.showFunc)) {
-                                 tempConfig.tips.success.showFunc({
-                                     type: tempConfig.tips.success.type || tempConfig.tips.type,
-                                     result: res,
-                                     content: tempConfig.tips.success.content,
-                                     title: tempConfig.tips.success.title,
-                                 })
-                             } else if (tempConfig.tips
-                                 && tempConfig.tips.success
-                                 && isFunction(tempConfig.tips.showFunc)) {
-                                 tempConfig.tips.showFunc({
-                                     isSuccess: true,
-                                     type: tempConfig.tips.success.type || tempConfig.tips.type,
-                                     result: res,
-                                     content: tempConfig.tips.success.content,
-                                     title: tempConfig.tips.success.title,
-                                 })
-                             }
-                         } catch (e) {
-                             yC?.debug && console.error(e)
-                         }
-                     }
-                     resolve(res)
                  })
                  .catch((err) => {
-                     if (tempConfig.hook
-                         && isFunction(tempConfig.hook.beforeError)) {
-                         try {
-                             if (!tempConfig.hook.beforeError(err)) {
-                                 return
-                             }
-                         } catch (e) {
-                             yC?.debug && console.error(e)
-                         }
+                     if (doError(tempConfig, err)) {
+                         reject(err)
                      }
-                     let showError = false
-                     if (tempConfig.tips
-                         && tempConfig.tips.error
-                         && isBoolean(tempConfig.tips.error.show)) {
-                         showError = tempConfig.tips.error.show
-                     } else if (tempConfig.tips && isBoolean(tempConfig.tips.show)) {
-                         showError = tempConfig.tips.show
-                     }
-                     if (showError) {
-                         try {
-                             if (tempConfig.tips
-                                 && tempConfig.tips.error
-                                 && isFunction(tempConfig.tips.error.showFunc)) {
-                                 tempConfig.tips.error.showFunc({
-                                     type: tempConfig.tips.error.type || tempConfig.tips.type,
-                                     result: err,
-                                     content: tempConfig.tips.error.content,
-                                     title: tempConfig.tips.error.title,
-                                 })
-                             } else if (tempConfig.tips
-                                 && tempConfig.tips.error
-                                 && isFunction(tempConfig.tips.showFunc)) {
-                                 tempConfig.tips.showFunc({
-                                     isSuccess: false,
-                                     result: err,
-                                     type: tempConfig.tips.error.type || tempConfig.tips.type,
-                                     content: tempConfig.tips.error.content,
-                                     title: tempConfig.tips.error.title,
-                                 })
-                             }
-                         } catch (e) {
-                             yC?.debug && console.error(e)
-                         }
-                     }
-                     reject(err)
                  })
                  .finally(() => {
                      // 关闭加载
@@ -281,3 +203,99 @@ class YiuAxios<D = any, L = any, T = any, > {
 }
 
 const _yiuAxios = new YiuAxios({})
+
+function doSuccess<D = any>(yC: YiuRequestConfig, res: AxiosResponse<D>): boolean {
+    if (yC.hook
+        && isFunction(yC.hook.beforeSuccess)) {
+        try {
+            if (!yC.hook.beforeSuccess(res)) {
+                return false
+            }
+        } catch (e) {
+            yC?.debug && console.error(e)
+        }
+    }
+    let showSuccess = false
+    if (yC.tips
+        && yC.tips.success
+        && isBoolean(yC.tips.success.show)) {
+        showSuccess = yC.tips.success.show
+    } else if (yC.tips && isBoolean(yC.tips.show)) {
+        showSuccess = yC.tips.show
+    }
+    if (showSuccess) {
+        try {
+            if (yC.tips
+                && yC.tips.success
+                && isFunction(yC.tips.success.showFunc)) {
+                yC.tips.success.showFunc({
+                    type: yC.tips.success.type || yC.tips.type,
+                    result: res,
+                    content: yC.tips.success.content,
+                    title: yC.tips.success.title,
+                })
+            } else if (yC.tips
+                && yC.tips.success
+                && isFunction(yC.tips.showFunc)) {
+                yC.tips.showFunc({
+                    isSuccess: true,
+                    type: yC.tips.success.type || yC.tips.type,
+                    result: res,
+                    content: yC.tips.success.content,
+                    title: yC.tips.success.title,
+                })
+            }
+        } catch (e) {
+            yC?.debug && console.error(e)
+        }
+    }
+    return true
+}
+
+function doError(yC: YiuRequestConfig, err: any): boolean {
+    if (yC.hook
+        && isFunction(yC.hook.beforeError)) {
+        try {
+            if (!yC.hook.beforeError(err)) {
+                return false
+            }
+        } catch (e) {
+            yC?.debug && console.error(e)
+        }
+    }
+    let showError = false
+    if (yC.tips
+        && yC.tips.error
+        && isBoolean(yC.tips.error.show)) {
+        showError = yC.tips.error.show
+    } else if (yC.tips && isBoolean(yC.tips.show)) {
+        showError = yC.tips.show
+    }
+    if (showError) {
+        try {
+            if (yC.tips
+                && yC.tips.error
+                && isFunction(yC.tips.error.showFunc)) {
+                yC.tips.error.showFunc({
+                    type: yC.tips.error.type || yC.tips.type,
+                    result: err,
+                    content: yC.tips.error.content,
+                    title: yC.tips.error.title,
+                })
+            } else if (yC.tips
+                && yC.tips.error
+                && isFunction(yC.tips.showFunc)) {
+                yC.tips.showFunc({
+                    isSuccess: false,
+                    result: err,
+                    type: yC.tips.error.type || yC.tips.type,
+                    content: yC.tips.error.content,
+                    title: yC.tips.error.title,
+                })
+            }
+        } catch (e) {
+            yC?.debug && console.error(e)
+        }
+    }
+    return true
+}

@@ -102,6 +102,10 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
      */
     success?: (res: AxiosResponse<D>) => void
     /**
+     * 成功请求是否自定义成错误
+     */
+    isError?: (res: AxiosResponse<D>) => boolean
+    /**
      * 失败后的处理
      * @param err 错误对象
      */

@@ -28,7 +28,7 @@ yarn add yiu-axios
 
 ```html
 
-<script src="https://unpkg.com/yiu-axios@1.0.51/yiu-axios.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.52/yiu-axios.iife.min.js"></script>
 ```
 
 浏览器有其他依赖：
@@ -37,7 +37,7 @@ yarn add yiu-axios
 
 <script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/yiu-axios@1.0.51/yiu-axios.onlib.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.52/yiu-axios.onlib.iife.min.js"></script>
 
 <script>
     console.log(YiuAxios)
@@ -325,15 +325,20 @@ yiuAxiosInstance.send({
 
 ```
 
-## 3.3.success、error、finally
+## 3.3.success、error、finally、isError
 
 三个请求的必要事件。
+
+`isError` 用于判断请求是否是失败的函数。一个返回`200`的请求在需求上不一定是成功的请求。 如果 `isError` 返回 `true` 那么将会调用 `error`，而不会调用 `success`。
 
 ```typescript
 yiuAxios.send({
     api: {
         url: '/hello',
         method: MethodEnum.GET,
+    },
+    isError: (res) => {
+        return res?.data?.type === 'error'
     },
     success: (res) => {
         console.log(res)
