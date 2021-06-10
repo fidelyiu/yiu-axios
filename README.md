@@ -28,7 +28,7 @@ yarn add yiu-axios
 
 ```html
 
-<script src="https://unpkg.com/yiu-axios@1.0.52/yiu-axios.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.53/yiu-axios.iife.min.js"></script>
 ```
 
 浏览器有其他依赖：
@@ -37,7 +37,7 @@ yarn add yiu-axios
 
 <script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/yiu-axios@1.0.52/yiu-axios.onlib.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.53/yiu-axios.onlib.iife.min.js"></script>
 
 <script>
     console.log(YiuAxios)
@@ -344,6 +344,22 @@ yiuAxios.send({
         console.log(res)
     },
     error: (err) => {
+        if (err.status && err.status >= 200 && err.status < 300) {
+            // 请求成功，被isError判定错误
+        } else if (error.response) {
+            // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+        } else if (error.request) {
+            // 请求已经成功发起，但没有收到响应
+            // `error.request` 在浏览器中是 XMLHttpRequest 的实例，
+            // 而在node.js中是 http.ClientRequest 的实例
+            console.log(error.request);
+        } else {
+            // 发送请求时出了点问题
+            console.log('Error', error.message);
+        }
         console.log(err)
     },
     finally: () => {
