@@ -49,6 +49,13 @@ export interface YiuAip {
 }
 
 /**
+ * 由于统一封装Api的类型
+ */
+export type YiuAipObj = {
+    [key: string]: YiuAip | YiuAipObj
+}
+
+/**
  * - D：返回data类型
  * - L：loading.flag类型
  * - T：消息类型：'none' | 'modal' | 'message' | 'notification' | undefined
