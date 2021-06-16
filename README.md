@@ -28,7 +28,7 @@ yarn add yiu-axios
 
 ```html
 
-<script src="https://unpkg.com/yiu-axios@1.0.55/yiu-axios.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.56/yiu-axios.iife.min.js"></script>
 ```
 
 浏览器有其他依赖：
@@ -37,7 +37,7 @@ yarn add yiu-axios
 
 <script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/yiu-axios@1.0.55/yiu-axios.onlib.iife.min.js"></script>
+<script src="https://unpkg.com/yiu-axios@1.0.56/yiu-axios.onlib.iife.min.js"></script>
 
 <script>
     console.log(YiuAxios)
@@ -373,20 +373,24 @@ yiuAxios.send({
 
 - `type`：消息展示的类型，由`YC`的第三个泛型控制。
 - `show`：请求后是否展示消息
+- `anyObj`：传给`showFunc`的任意对象，一般用于`showFunc`使用调用方特有的变量
 - `showFunc`：展示成功消息的方法
     - `isSuccess`：是否是成功消息
     - `type`：消息类型
     - `result`：请求后的结果
     - `content`：消息内容
     - `title`：消息标题
+    - `anyObj`：传入的`showFunc`对象
 - `success`：成功后的消息配置
     - `type`：同上级`type`，比上级的优先级高
     - `show`：同上级`show`，比上级的优先级高
+    - `anyObj`：传给`showFunc`的任意对象，一般用于`showFunc`使用调用方特有的变量，比上级的优先级高
     - `showFunc`：同上级`showFunc`，比上级的优先级高
         - `type`：消息类型
         - `result`：请求成功后的结果
         - `content`：消息内容
         - `title`：消息标题
+        - `anyObj`：传入的`showFunc`对象
 - `error`：成功后的消息配置
     - 同`success`
 
@@ -395,9 +399,10 @@ const yiuAxiosInstance = yiuAxios.create<any, any, 'console' | 'other'>({
     tips: {
         type: 'other',
         show: true,
-        showFunc: ({ isSuccess, result, type, title, content }) => {
+        showFunc: ({ isSuccess, result, type, title, content, anyObj }) => {
             const typeStr = isSuccess ? '成功' : '失败'
             console.log('请求结果', result)
+            console.log('调用方传入的anyObj', anyObj)
             switch (type) {
                 case 'other':
                     console.warn(`${typeStr}-${title}：${content}`)
@@ -420,6 +425,7 @@ const yiuAxiosInstance = yiuAxios.create<any, any, 'console' | 'other'>({
 
 yiuAxiosInstance.send(
     {
+        tips: { anyObj: 'Yiu' },
         api: {
             url: '/yiu',
             method: MethodEnum.GET,

@@ -128,6 +128,10 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
          */
         show?: boolean
         /**
+         * 传给showFunc的任意对象，一般用于showFunc使用调用方特有的变量
+         */
+        anyObj?: any
+        /**
          * 展示成功消息的方式
          */
         showFunc?: (res: {
@@ -136,6 +140,7 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
             result?: any
             content?: any
             title?: any
+            anyObj?: any
         }) => void
         /**
          * 成功Tips的配置
@@ -150,6 +155,10 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
              */
             show?: boolean
             /**
+             * 传给showFunc的任意对象，一般用于showFunc使用调用方特有的变量，比上级的优先级高
+             */
+            anyObj?: any
+            /**
              * 展示成功消息的方式，比上级的优先级高
              */
             showFunc?: (res: {
@@ -157,6 +166,7 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
                 result?: any
                 content?: any
                 title?: any
+                anyObj?: any
             }) => void
             /**
              * 请求成功后Tips展示的标题
@@ -180,6 +190,10 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
              */
             show?: boolean
             /**
+             * 传给showFunc的任意对象，一般用于showFunc使用调用方特有的变量，比上级的优先级高
+             */
+            anyObj?: any
+            /**
              * 展示失败消息的方式，比上级的优先级高
              */
             showFunc?: (res: {
@@ -187,6 +201,7 @@ export interface YiuRequestConfig<D = any, L = any, T = any> extends AxiosReques
                 result?: any
                 content?: any
                 title?: any
+                anyObj?: any
             }) => void
             /**
              * 请求失败后Tips展示的标题
