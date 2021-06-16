@@ -233,6 +233,7 @@ function doSuccess<D = any>(yC: YiuRequestConfig, res: AxiosResponse<D>): boolea
                     result: res,
                     content: yC.tips.success.content,
                     title: yC.tips.success.title,
+                    anyObj: yC.tips.success.anyObj || yC.tips.anyObj,
                 })
             } else if (yC.tips
                 && yC.tips.success
@@ -243,7 +244,7 @@ function doSuccess<D = any>(yC: YiuRequestConfig, res: AxiosResponse<D>): boolea
                     result: res,
                     content: yC.tips.success.content,
                     title: yC.tips.success.title,
-                    anyObj: yC.tips.success.anyObj || yC.tips.anyObj
+                    anyObj: yC.tips.success.anyObj || yC.tips.anyObj,
                 })
             }
         } catch (e) {
@@ -282,6 +283,7 @@ function doError(yC: YiuRequestConfig, err: any): boolean {
                     result: err,
                     content: yC.tips.error.content,
                     title: yC.tips.error.title,
+                    anyObj: yC.tips.success.anyObj || yC.tips.anyObj,
                 })
             } else if (yC.tips
                 && yC.tips.error
@@ -292,7 +294,7 @@ function doError(yC: YiuRequestConfig, err: any): boolean {
                     type: yC.tips.error.type || yC.tips.type,
                     content: yC.tips.error.content,
                     title: yC.tips.error.title,
-                    anyObj: yC.tips.success.anyObj || yC.tips.anyObj
+                    anyObj: yC.tips.success.anyObj || yC.tips.anyObj,
                 })
             }
         } catch (e) {
