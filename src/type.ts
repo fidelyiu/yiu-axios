@@ -49,6 +49,11 @@ export interface YiuAip {
 }
 
 /**
+ * 从 YiuRequestConfig 中剔除 'success' | 'error' | 'finally' 类型
+ */
+export type YiuPromiseRequestConfig<D = any, L = any, T = any> = Omit<YiuRequestConfig<D, L, T>, 'success' | 'error' | 'finally'>
+
+/**
  * - D：返回data类型
  * - L：loading.flag类型
  * - T：消息类型：'none' | 'modal' | 'message' | 'notification' | undefined

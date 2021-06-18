@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, Canceler } from 'axios'
 import { transformConfig } from './transform'
-import { YiuRequestConfig } from './type'
+import { YiuPromiseRequestConfig, YiuRequestConfig } from './type'
 import { isBoolean, isFunction, merge } from 'lodash'
 
 export const yiuAxios = {
@@ -12,11 +12,11 @@ export const yiuAxios = {
         return _yiuAxios.send<D, L, T>(yC, a, aC)
     },
 
-    sendPromise<D, L, T>(yC?: Omit<YiuRequestConfig<D, L, T>, 'success' | 'error' | 'finally'>, a?: AxiosInstance, aC?: AxiosRequestConfig): Promise<AxiosResponse<D>> {
+    sendPromise<D, L, T>(yC?: YiuPromiseRequestConfig<D, L, T>, a?: AxiosInstance, aC?: AxiosRequestConfig): Promise<AxiosResponse<D>> {
         return _yiuAxios.sendPromise<D, L, T>(yC, a, aC)
     },
 
-    sendPromiseAndCanceler<D, L, T>(yC?: Omit<YiuRequestConfig<D, L, T>, 'success' | 'error' | 'finally'>, a?: AxiosInstance, aC?: AxiosRequestConfig): {
+    sendPromiseAndCanceler<D, L, T>(yC?: YiuPromiseRequestConfig<D, L, T>, a?: AxiosInstance, aC?: AxiosRequestConfig): {
         promise: Promise<AxiosResponse<D>>,
         canceler?: Canceler,
     } {
